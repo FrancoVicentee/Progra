@@ -3,9 +3,9 @@ from paquete_2 import val_datos
 def menu_clientes(clientes_lista):
     opcion = -1
     while opcion != 0:
-        print("\n----------------------------")
+        print("\n------------------------------------")
         print("MENÚ PRINCIPAL > MENÚ DE CLIENTES")
-        print("----------------------------")
+        print("------------------------------------")
         print("[1] Ingresar cliente")
         print("[2] Listar clientes")
         print("[3] Baja de cliente")
@@ -27,6 +27,13 @@ def menu_clientes(clientes_lista):
 
     return clientes_lista
 
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Funciones para el manejo de clientes en el sistema.
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 ID = 0
@@ -57,16 +64,17 @@ def ingresar_cliente(clientes_lista):
 
 
 def listar_clientes(clientes_lista):
-    encabezados_clientes = ['Id_cliente', 'Nombre', 'Apellido', 'DNI']
-    print("\n--- Listado de clientes ---")
+    encabezados_clientes = ['ID', 'Nombre', 'Apellido', 'DNI']
+    titulo = " Listado de clientes "
+    print(f"\n{titulo:-^50}")
     if len(clientes_lista) == 0:
         print("No hay clientes cargados.")
         return clientes_lista
 
-    print(f"{encabezados_clientes[ID]:<5}{encabezados_clientes[NOMBRE]:<15}{encabezados_clientes[APELLIDO]:<15}{encabezados_clientes[DNI]:<12}")
-    print("-" * 47)
+    print(f"{encabezados_clientes[ID]:<10}{encabezados_clientes[NOMBRE]:<15}{encabezados_clientes[APELLIDO]:<15}{encabezados_clientes[DNI]:<12}")
+    print("-" * 50)
     for cliente in clientes_lista:
-        print(f"{cliente[ID]:<5}{cliente[NOMBRE]:<15}{cliente[APELLIDO]:<15}{cliente[DNI]:<12}")
+        print(f"{cliente[ID]:<10}{cliente[NOMBRE]:<15}{cliente[APELLIDO]:<15}{cliente[DNI]:<12}")
 
     return clientes_lista
 
