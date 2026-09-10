@@ -39,6 +39,7 @@ def listar_reservas(reservas_lista):
                 f"{reserva[0]:<5}{reserva[1]:<12}{reserva[2]:<10}"
                 f"{reserva[3]:<15}{reserva[4]:<15}"
             )
+    val_datos.pausar_menu()        
     return reservas_lista
 
 

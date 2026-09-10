@@ -1,3 +1,5 @@
+import re
+
 def es_entero(cadena):
 
     if cadena == "":
@@ -87,3 +89,9 @@ def existe_id(lista, id_valor):
 
     coincidencias = list(filter(lambda registro: registro[0] == id_valor, lista))
     return len(coincidencias) > 0
+
+
+def pausar_menu():
+    opcion = -1
+    while opcion != 0:
+        opcion = pedir_entero_rango("\nPresione 0 para volver: ", 0, 0)

@@ -85,9 +85,7 @@ def listar_habitaciones(habitaciones_lista):
         print("---------------------------------------------------")
         print(f"Cantidad total de habitaciones: {cantidad_habitaciones}")
  
-        print("\n---------------------------")
-        val_datos.pedir_entero_rango("Presione 0 para volver al menú de habitaciones: ", 0, 0)
- 
+        val_datos.pausar_menu()
     return habitaciones_lista
  
  

@@ -33,7 +33,7 @@ def menu_clientes(clientes_lista):
 
 Funciones para el manejo de clientes en el sistema.
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 ID = 0
@@ -75,7 +75,8 @@ def listar_clientes(clientes_lista):
     print("-" * 50)
     for cliente in clientes_lista:
         print(f"{cliente[ID]:<10}{cliente[NOMBRE]:<15}{cliente[APELLIDO]:<15}{cliente[DNI]:<12}")
-
+        
+    val_datos.pausar_menu()
     return clientes_lista
 
 
