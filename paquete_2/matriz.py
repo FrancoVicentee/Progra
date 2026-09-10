@@ -1,3 +1,4 @@
+import re 
 from functools import reduce
 from paquete_2 import val_datos
 
@@ -51,14 +52,37 @@ def calcular_capacidad_total(lista_de_habitaciones):
 
 #imprime los numeros de las habitaciones registradas en la lista de habitaciones
 
-def obtener_numeros_de_habitacion(lista_de_habitaciones):
-    numeros_de_habitacion = [habitacion[1] for habitacion in lista_de_habitaciones]
-    print("Números de habitación registrados:")
-    for numero in numeros_de_habitacion:
-        print(numero)
-    val_datos.pausar_menu()
-    return numeros_de_habitacion
+def obtener_habitaciones_ocupadas(lista_de_habitaciones):
+    habitaciones_ocupadas = [habitacion for habitacion in lista_de_habitaciones if habitacion[4] == 'Ocupada']
 
+    print("\n--- Habitaciones ocupadas ---")
+    if len(habitaciones_ocupadas) == 0:
+        print("No hay habitaciones ocupadas.")
+    else:
+        print(f"{'ID':<5}{'Número':<10}{'Tipo':<12}{'Capacidad':<12}{'Estado':<15}")
+        print("-" * 50)
+        for habitacion in habitaciones_ocupadas:
+            print(f"{habitacion[0]:<5}{habitacion[1]:<10}{habitacion[2]:<12}{habitacion[3]:<12}{habitacion[4]:<15}")
+
+    val_datos.pausar_menu()
+    return habitaciones_ocupadas
+
+
+def buscar_clientes_por_inicial(clientes_lista, letra):
+    patron = "^" + letra
+    clientes_encontrados = []
+    for cliente in clientes_lista:
+        if re.match(patron, cliente[1], re.IGNORECASE):
+            clientes_encontrados.append(cliente)
+    print(f"\n--- Clientes cuyo nombre empieza con '{letra}' ---")
+    if len(clientes_encontrados) == 0:
+        print("No se encontraron clientes.")
+    else:
+        for cliente in clientes_encontrados:
+            print(cliente)
+
+    val_datos.pausar_menu()
+    return clientes_encontrados
 
 def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
     opcion = -1
@@ -71,11 +95,12 @@ def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
         print("[3] Ordenar reservas por fecha de ingreso")
         print("[4] Ver habitaciones disponibles")
         print("[5] Ver capacidad total del hotel")
-        print("[6] Ver números de habitación registrados")
+        print("[6] Ver habitaciones ocupadas")
+        print("[7] Buscar clientes por letra inicial")
         print("[0] Volver al menú anterior")
         print("-" * 50)
 
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 7)
 
         if opcion == 1:
             subtitulo = " Clientes ordenados por apellido "
@@ -98,8 +123,9 @@ def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
             print(f"\n{subtitulo:-^50}")
             calcular_capacidad_total(habitaciones_lista)
         elif opcion == 6:
-            subtitulo = " Números de habitación registrados "
-            print(f"\n{subtitulo:-^50}")
-            obtener_numeros_de_habitacion(habitaciones_lista)
+            obtener_habitaciones_ocupadas(habitaciones_lista)
+        elif opcion == 7:
+            letra = input("Ingrese la letra inicial a buscar: ")
+            buscar_clientes_por_inicial(clientes_lista, letra)
         else:
             print("Saliendo del menú de matrices...")

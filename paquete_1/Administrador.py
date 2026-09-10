@@ -5,7 +5,7 @@ def alta_empleado(empleados_dict):
     legajo = val_datos.pedir_entero_rango("Ingrese legajo (100-999): ", 100, 999)
     
     if legajo not in empleados_dict:
-        nombre = input("Nombre del empleado: ")
+        nombre = val_datos.pedir_nombre_empleado("Nombre del empleado: ")
         sueldo = val_datos.pedir_entero_rango("Sueldo: $", 100000, 9999999)
         empleados_dict[legajo] = {"nombre": nombre, "sueldo": sueldo}
         print("Empleado registrado correctamente.")

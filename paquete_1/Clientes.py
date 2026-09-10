@@ -49,8 +49,8 @@ def generar_id(clientes_lista):
 
 def ingresar_cliente(clientes_lista):
     print("\n--- Ingresar cliente ---")
-    nombre = input("Nombre: ")
-    apellido = input("Apellido: ")
+    nombre = val_datos.pedir_nombre("Nombre: ")
+    apellido = val_datos.pedir_apellido("Apellido: ")
     dni = val_datos.pedir_entero_rango("DNI: ", 100000, 99999999)
 
     nuevo_id = generar_id(clientes_lista)

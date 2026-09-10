@@ -95,3 +95,52 @@ def pausar_menu():
     opcion = -1
     while opcion != 0:
         opcion = pedir_entero_rango("\nPresione 0 para volver: ", 0, 0)
+
+
+def es_nombre_valido(nombre):
+    patron = r"^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
+    if re.match(patron, nombre):
+        return True
+    else:
+        return False
+
+
+def pedir_nombre(mensaje):
+    nombre = input(mensaje)
+    while es_nombre_valido(nombre) == False:
+        print("Error. El nombre solo puede contener letras.")
+        nombre = input(mensaje)
+    return nombre
+
+
+def es_apellido_valido(apellido):
+    patron = r"^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
+    if re.match(patron, apellido):
+        return True
+    else:
+        return False
+
+
+def pedir_apellido(mensaje):
+    apellido = input(mensaje)
+    while es_apellido_valido(apellido) == False:
+        print("Error. El apellido solo puede contener letras.")
+        apellido = input(mensaje)
+    return apellido
+
+
+def es_nombre_empleado_valido(nombre):
+    patron = r"^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
+    if re.match(patron, nombre):
+        return True
+    else:
+        return False
+
+
+def pedir_nombre_empleado(mensaje):
+    nombre = input(mensaje)
+    while es_nombre_empleado_valido(nombre) == False:
+        print("Error. El nombre solo puede contener letras.")
+        nombre = input(mensaje)
+    return nombre
+
