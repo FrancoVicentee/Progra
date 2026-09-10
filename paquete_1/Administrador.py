@@ -78,17 +78,15 @@ def modificar_sueldo(empleados_dict):
 def menu_admin(empleados_dict):
     opcion = -1
     while opcion != 0:
-        print("\n---------------------------")
-        print("MENÚ ADMINISTRACIÓN")
-        print("---------------------------")
+        titulo = " Menú Administración "
+        print(f"\n{titulo:-^50}")
         print("[1] Alta de empleado")
         print("[2] Listar empleados")
         print("[3] Baja de empleado")
         print("[4] Modificar sueldo empleado")
-        print("---------------------------")
         print("[0] Cerrar menú de administración")
-        print("---------------------------")
-        
+        print("-" * 50)
+
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
 
         match opcion:

@@ -3,19 +3,17 @@ from paquete_2 import val_datos
 def menu_habitaciones(habitaciones_lista):
     opcion = -1
     while opcion != 0:
-        print("\n---------------------------")
-        print("MENÚ PRINCIPAL > MENÚ DE HABITACIONES")
-        print("---------------------------")
+        titulo = " Menú Principal > Menú de Habitaciones "
+        print(f"\n{titulo:-^50}")
         print("[1] Alta de habitación")
         print("[2] Listar habitaciones")
         print("[3] Baja de habitación")
         print("[4] Modificar habitación")
-        print("---------------------------")
         print("[0] Volver al menú anterior")
-        print("---------------------------")
- 
+        print("-" * 50)
+
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
- 
+
         if opcion == 1:
             habitaciones_lista = alta_habitacion(habitaciones_lista)
         elif opcion == 2:
@@ -24,7 +22,7 @@ def menu_habitaciones(habitaciones_lista):
             habitaciones_lista = baja_habitacion(habitaciones_lista)
         elif opcion == 4:
             habitaciones_lista = modificar_habitacion(habitaciones_lista)
- 
+
     return habitaciones_lista
  
  

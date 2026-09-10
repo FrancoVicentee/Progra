@@ -64,38 +64,42 @@ def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
     opcion = -1
 
     while opcion != 0:
-        print("\n---------------------------")
-        print("MENÚ PRINCIPAL > MENÚ DE MATRICES")
-        print("---------------------------")
+        titulo = " Menú Principal > Menú de Matrices "
+        print(f"\n{titulo:-^50}")
         print("[1] Ordenar clientes por apellido")
         print("[2] Ordenar habitaciones por número")
         print("[3] Ordenar reservas por fecha de ingreso")
         print("[4] Ver habitaciones disponibles")
         print("[5] Ver capacidad total del hotel")
         print("[6] Ver números de habitación registrados")
-        print("---------------------------")
         print("[0] Volver al menú anterior")
-        print("---------------------------")
+        print("-" * 50)
 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
 
         if opcion == 1:
-            print("\n--- Clientes ordenados por apellido ---")
+            subtitulo = " Clientes ordenados por apellido "
+            print(f"\n{subtitulo:-^50}")
             ordenar_por_apellido(clientes_lista)
         elif opcion == 2:
-            print("\n--- Habitaciones ordenadas por número ---")
+            subtitulo = " Habitaciones ordenadas por número "
+            print(f"\n{subtitulo:-^50}")
             ordenar_por_numero(habitaciones_lista)
         elif opcion == 3:
-            print("\n--- Reservas ordenadas por fecha de ingreso ---")
+            subtitulo = " Reservas ordenadas por fecha de ingreso "
+            print(f"\n{subtitulo:-^50}")
             ordenar_por_fecha_ingreso(reservas_lista)
         elif opcion == 4:
-            print("\n--- Habitaciones disponibles ---")
+            subtitulo = " Habitaciones disponibles "
+            print(f"\n{subtitulo:-^50}")
             ver_habitaciones_disponibles(habitaciones_lista)
         elif opcion == 5:
-            print("\n--- Capacidad total del hotel ---")
+            subtitulo = " Capacidad total del hotel "
+            print(f"\n{subtitulo:-^50}")
             calcular_capacidad_total(habitaciones_lista)
         elif opcion == 6:
-            print("\n--- Números de habitación registrados ---")
+            subtitulo = " Números de habitación registrados "
+            print(f"\n{subtitulo:-^50}")
             obtener_numeros_de_habitacion(habitaciones_lista)
         else:
             print("Saliendo del menú de matrices...")

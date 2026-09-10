@@ -3,16 +3,14 @@ from paquete_2 import val_datos
 def menu_clientes(clientes_lista):
     opcion = -1
     while opcion != 0:
-        print("\n------------------------------------")
-        print("MENÚ PRINCIPAL > MENÚ DE CLIENTES")
-        print("------------------------------------")
+        titulo = " Menú Principal > Menú de Clientes "
+        print(f"\n{titulo:-^50}")
         print("[1] Ingresar cliente")
         print("[2] Listar clientes")
         print("[3] Baja de cliente")
         print("[4] Modificar cliente")
-        print("----------------------------")
         print("[0] Volver al menú anterior")
-        print("----------------------------")
+        print("-" * 50)
 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
 

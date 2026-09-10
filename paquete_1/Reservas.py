@@ -155,16 +155,14 @@ def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
 
     opcion = -1
     while opcion != 0:
-        print("\n---------------------------")
-        print("MENÚ PRINCIPAL > MENÚ DE RESERVAS")
-        print("---------------------------")
+        titulo = " Menú Principal > Menú de Reservas "
+        print(f"\n{titulo:-^50}")
         print("[1] Alta de reserva")
         print("[2] Listar reservas")
         print("[3] Baja de reserva")
         print("[4] Modificar reserva")
-        print("---------------------------")
         print("[0] Volver al menú anterior")
-        print("---------------------------")
+        print("-" * 50)
 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
 
