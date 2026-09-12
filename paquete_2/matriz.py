@@ -84,6 +84,14 @@ def buscar_clientes_por_inicial(clientes_lista, letra):
     val_datos.pausar_menu()
     return clientes_encontrados
 
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Menú de matrices para el sistema.
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
 def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
     opcion = -1
 

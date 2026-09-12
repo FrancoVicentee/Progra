@@ -40,18 +40,17 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
     salir_del_programa = False
     
     while menu_activo == True:
-        print("\n---------------------------")
-        print("MENÚ PRINCIPAL (ADMINISTRADOR)")
-        print("---------------------------")
+        titulo = " Menú Principal (ADMIN) "
+        print(f"\n{titulo:-^50}")
         print("[1] Gestión de clientes")
         print("[2] Gestión de habitaciones")
         print("[3] Gestión de reservas")
         print("[4] Matrices - Ordenar y consultar datos")
         print("[5] Menú de Administración (Empleados)")
-        print("---------------------------")
+        print(f"{'-' * 50}")
         print("[6] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
-        print("---------------------------")
+        print(f"{'-' * 50}")
 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
 
@@ -80,17 +79,16 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
     salir_del_programa = False
     
     while menu_activo == True:
-        print("\n---------------------------")
-        print("MENÚ PRINCIPAL (EMPLEADO)")
-        print("---------------------------")
+        titulo = " Menú Principal (EMPLEADO) "
+        print(f"\n{titulo:-^50}")
         print("[1] Gestión de clientes")
         print("[2] Gestión de habitaciones")
         print("[3] Gestión de reservas")
         print("[4] Matrices - Ordenar y consultar datos")
-        print("---------------------------")
+        print(f"{'-' * 50}")
         print("[5] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
-        print("---------------------------")
+        print(f"{'-' * 50}")
 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
 

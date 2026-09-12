@@ -1,5 +1,14 @@
 from paquete_2 import val_datos
 
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Funciones para el manejo de reservas en el sistema.
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
 def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
 
     print("\n--- Alta de reserva ---")
@@ -28,15 +37,15 @@ def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
 
 
 def listar_reservas(reservas_lista):
-
-    print("\n--- Listado de reservas ---")
+    titulo = " Listado de reservas "
+    print(f"\n{titulo:-^60}")
     if len(reservas_lista) == 0:
         print("No hay reservas registradas.")
     else:
-        print(f"{'ID':<5}{'Id_cliente':<12}{'Id_hab':<10}{'Ingreso':<15}{'Egreso':<15}")
+        print(f"{'ID':<5}{'Id_cliente':<13}{'Id_hab':<10}{'Ingreso':<15}{'Egreso':<15}")
         for reserva in reservas_lista:
             print(
-                f"{reserva[0]:<5}{reserva[1]:<12}{reserva[2]:<10}"
+                f"{reserva[0]:<5}{reserva[1]:<13}{reserva[2]:<10}"
                 f"{reserva[3]:<15}{reserva[4]:<15}"
             )
     val_datos.pausar_menu()        
@@ -149,6 +158,14 @@ def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
     else:
         print("No existe una reserva con ese ID.")
     return reservas_lista
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Menú de reservas para el sistema.
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):

@@ -1,5 +1,14 @@
 from paquete_2 import val_datos
 
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Funciones de administrador para el manejo de empleados en el sistema.
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
 def alta_empleado(empleados_dict):
     print("\n--- Alta de Empleado ---")
     legajo = val_datos.pedir_entero_rango("Ingrese legajo (100-999): ", 100, 999)
@@ -20,7 +29,7 @@ def listar_empleados(empleados_dict):
     if len(empleados_dict) == 0:
         print("No hay empleados registrados.")
     else:
-        print(f"{'Legajo':<10}{'Nombre':<15}{'Sueldo':<10}")
+        print(f"{'Legajo':<10}{'Nombre':<20}{'Sueldo':<10}")
         print("-" * 35)
         
         claves = list(empleados_dict.keys())
@@ -28,7 +37,7 @@ def listar_empleados(empleados_dict):
         while indice < len(claves):
             leg = claves[indice]
             datos = empleados_dict[leg]
-            print(f"{leg:<10}{datos['nombre']:<15}${datos['sueldo']:<10}")
+            print(f"{leg:<10}{datos['nombre']:<20}${datos['sueldo']:<10}")
             indice += 1
             
     val_datos.pausar_menu()
@@ -73,6 +82,15 @@ def modificar_sueldo(empleados_dict):
             print("Empleado no encontrado.")
             
     return empleados_dict
+
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Menú de administración para el sistema.
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def menu_admin(empleados_dict):

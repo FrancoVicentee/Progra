@@ -1,49 +1,18 @@
 from paquete_2 import val_datos
 
-def menu_clientes(clientes_lista):
-    opcion = -1
-    while opcion != 0:
-        titulo = " Menú Principal > Menú de Clientes "
-        print(f"\n{titulo:-^50}")
-        print("[1] Ingresar cliente")
-        print("[2] Listar clientes")
-        print("[3] Baja de cliente")
-        print("[4] Modificar cliente")
-        print("[0] Volver al menú anterior")
-        print("-" * 50)
 
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
-
-        if opcion == 1:
-            clientes_lista = ingresar_cliente(clientes_lista)
-        elif opcion == 2:
-            clientes_lista = listar_clientes(clientes_lista)
-        elif opcion == 3:
-            clientes_lista = baja_cliente(clientes_lista)
-        elif opcion == 4:
-            clientes_lista = modificar_cliente(clientes_lista)
-
-    return clientes_lista
-
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Funciones para el manejo de clientes en el sistema.
 
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-ID = 0
-NOMBRE = 1
-APELLIDO = 2
-DNI = 3
-
 
 def generar_id(clientes_lista):
     if len(clientes_lista) == 0:
         return 1
-    ids = [cliente[ID] for cliente in clientes_lista]
+    ids = [cliente[0] for cliente in clientes_lista]
     return max(ids) + 1
 
 
@@ -69,10 +38,10 @@ def listar_clientes(clientes_lista):
         print("No hay clientes cargados.")
         return clientes_lista
 
-    print(f"{encabezados_clientes[ID]:<10}{encabezados_clientes[NOMBRE]:<15}{encabezados_clientes[APELLIDO]:<15}{encabezados_clientes[DNI]:<12}")
+    print(f"{encabezados_clientes[0]:<10}{encabezados_clientes[1]:<15}{encabezados_clientes[2]:<15}{encabezados_clientes[3]:<12}")
     print("-" * 50)
     for cliente in clientes_lista:
-        print(f"{cliente[ID]:<10}{cliente[NOMBRE]:<15}{cliente[APELLIDO]:<15}{cliente[DNI]:<12}")
+        print(f"{cliente[0]:<10}{cliente[1]:<15}{cliente[2]:<15}{cliente[3]:<12}")
         
     val_datos.pausar_menu()
     return clientes_lista
@@ -80,7 +49,7 @@ def listar_clientes(clientes_lista):
 
 def buscar_cliente_por_id(clientes_lista, id_buscado):
     for cliente in clientes_lista:
-        if cliente[ID] == id_buscado:
+        if cliente[0] == id_buscado:
             return cliente
     return False
 
@@ -98,7 +67,7 @@ def baja_cliente(clientes_lista):
         print("No existe un cliente con ese ID.")
     else:
         clientes_lista.remove(cliente)
-        print(f"Cliente {cliente[NOMBRE]} {cliente[APELLIDO]} eliminado.")
+        print(f"Cliente {cliente[1]} {cliente[2]} eliminado.")
 
     return clientes_lista
 
@@ -117,16 +86,51 @@ def modificar_cliente(clientes_lista):
         return clientes_lista
 
     print("Deje vacío el campo si no desea modificarlo.")
-    nuevo_nombre = input(f"Nombre ({cliente[NOMBRE]}): ")
-    nuevo_apellido = input(f"Apellido ({cliente[APELLIDO]}): ")
-    nuevo_dni = val_datos.pedir_entero_rango(f"DNI ({cliente[DNI]}): ", 100000, 99999999)
+    nuevo_nombre = input(f"Nombre ({cliente[1]}): ")
+    nuevo_apellido = input(f"Apellido ({cliente[2]}): ")
+    nuevo_dni = val_datos.pedir_entero_rango(f"DNI ({cliente[3]}): ", 100000, 99999999)
 
     if nuevo_nombre != "":
-        cliente[NOMBRE] = nuevo_nombre
+        cliente[1] = nuevo_nombre
     if nuevo_apellido != "":
-        cliente[APELLIDO] = nuevo_apellido
+        cliente[2] = nuevo_apellido
     if nuevo_dni != "":
-        cliente[DNI] = int(nuevo_dni)
+        cliente[3] = int(nuevo_dni)
 
     print("Cliente modificado correctamente.")
+    return clientes_lista
+
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Menú de clientes para el sistema.
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+def menu_clientes(clientes_lista):
+    opcion = -1
+    while opcion != 0:
+        titulo = " Menú Principal > Menú de Clientes "
+        print(f"\n{titulo:-^50}")
+        print("[1] Ingresar cliente")
+        print("[2] Listar clientes")
+        print("[3] Baja de cliente")
+        print("[4] Modificar cliente")
+        print("[0] Volver al menú anterior")
+        print("-" * 50)
+
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
+
+        if opcion == 1:
+            clientes_lista = ingresar_cliente(clientes_lista)
+        elif opcion == 2:
+            clientes_lista = listar_clientes(clientes_lista)
+        elif opcion == 3:
+            clientes_lista = baja_cliente(clientes_lista)
+        elif opcion == 4:
+            clientes_lista = modificar_cliente(clientes_lista)
+
     return clientes_lista
