@@ -1,14 +1,14 @@
 from paquete_2 import val_datos
-
-
-
+ 
+ 
+ 
 """""""""""""""""""""""""""""""""""""""""""""""""""
-
+ 
 Funciones de administrador para el manejo de empleados en el sistema.
-
+ 
 """""""""""""""""""""""""""""""""""""""""""""""""""
-
-
+ 
+ 
 def alta_empleado(empleados_dict):
     print("\n--- Alta de Empleado ---")
     legajo = val_datos.pedir_entero_rango("Ingrese legajo (100-999): ", 100, 999)
@@ -22,8 +22,8 @@ def alta_empleado(empleados_dict):
         print("Error. El legajo ya existe.")
         
     return empleados_dict
-
-
+ 
+ 
 def listar_empleados(empleados_dict):
     print("\n--- Listado de Empleados ---")
     if len(empleados_dict) == 0:
@@ -42,8 +42,8 @@ def listar_empleados(empleados_dict):
             
     val_datos.pausar_menu()
     return empleados_dict
-
-
+ 
+ 
 def baja_empleado(empleados_dict):
     print("\n--- Baja de Empleado ---")
     if len(empleados_dict) == 0:
@@ -64,8 +64,8 @@ def baja_empleado(empleados_dict):
             print("Empleado no encontrado.")
             
     return empleados_dict
-
-
+ 
+ 
 def modificar_sueldo(empleados_dict):
     print("\n--- Modificar Sueldo de Empleado ---")
     if len(empleados_dict) == 0:
@@ -82,17 +82,17 @@ def modificar_sueldo(empleados_dict):
             print("Empleado no encontrado.")
             
     return empleados_dict
-
-
-
-
+ 
+ 
+ 
+ 
 """""""""""""""""""""""""""""""""""""""""""""""""""
-
+ 
 Menú de administración para el sistema.
-
+ 
 """""""""""""""""""""""""""""""""""""""""""""""""""
-
-
+ 
+ 
 def menu_admin(empleados_dict):
     opcion = -1
     while opcion != 0:
@@ -102,11 +102,12 @@ def menu_admin(empleados_dict):
         print("[2] Listar empleados")
         print("[3] Baja de empleado")
         print("[4] Modificar sueldo empleado")
+        print("-" * 50)
         print("[0] Cerrar menú de administración")
         print("-" * 50)
-
+ 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
-
+ 
         match opcion:
             case 1:
                 empleados_dict = alta_empleado(empleados_dict)
@@ -118,5 +119,5 @@ def menu_admin(empleados_dict):
                 empleados_dict = modificar_sueldo(empleados_dict)
             case 0:
                 print("Cerrando menú de administración.")
-
+ 
     return empleados_dict

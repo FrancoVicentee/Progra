@@ -1,5 +1,5 @@
 # MÓDULOS
-
+ 
 from paquete_1 import Clientes
 from paquete_1 import Habitaciones
 from paquete_1 import Reservas
@@ -23,18 +23,18 @@ def login():
         contrasena_try = input("Ingrese la contraseña: ")
         
         if usuario_try in usuarios and usuarios[usuario_try][0] == contrasena_try:
-            print(f"\n¡Sesión iniciada correctamente como {usuarios[usuario_try][1]}!")
+            val_datos.imprimir_exito(f"\n¡Sesión iniciada correctamente como {usuarios[usuario_try][1]}!")
             acceso_concedido = True
             rol_usuario = usuarios[usuario_try][1]
         else:
             intentos -= 1
             if intentos > 0:
-                print(f"Credenciales incorrectas. Intentos restantes: {intentos}")
+                val_datos.imprimir_error(f"Credenciales incorrectas. Intentos restantes: {intentos}")
             else:
-                print("Has llegado al límite de intentos, tu sesión ha sido bloqueada.")
+                val_datos.imprimir_error("Has llegado al límite de intentos, tu sesión ha sido bloqueada.")
                 
     return acceso_concedido, rol_usuario
-
+ 
 def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
     menu_activo = True
     salir_del_programa = False
@@ -51,9 +51,9 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
         print("[6] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
         print(f"{'-' * 50}")
-
+ 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
-
+ 
         match opcion:
             case 1:
                 clientes = Clientes.menu_clientes(clientes)
@@ -71,9 +71,9 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
             case 0:
                 menu_activo = False
                 salir_del_programa = True
-
+ 
     return salir_del_programa
-
+ 
 def menu_principal_empleados(clientes, habitaciones, reservas):
     menu_activo = True
     salir_del_programa = False
@@ -89,9 +89,9 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
         print("[5] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
         print(f"{'-' * 50}")
-
+ 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
-
+ 
         match opcion:
             case 1:
                 clientes = Clientes.menu_clientes(clientes)
@@ -109,7 +109,7 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
                 salir_del_programa = True
                 
     return salir_del_programa
-
+ 
 if __name__ == "__main__":
     
     empleados_dict = {
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         [4, 'María', 'Fernández', 35147852],
         [5, 'Lucía', 'Martínez', 38741256],
     ]
-
+ 
     habitaciones = [
         [1, 101, 'Simple', 1, 'Disponible'],
         [2, 102, 'Simple', 1, 'Ocupada'],
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         [4, 202, 'Doble', 2, 'Mantenimiento'],
         [5, 301, 'Suite', 4, 'Disponible'],
     ]
-
+ 
     reservas = [
         [1, 1, 3, '01/09/2026', '15/09/2026'],
         [2, 2, 1, '28/08/2026', '02/09/2026'],
