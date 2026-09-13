@@ -266,12 +266,13 @@ def menu_habitaciones(habitaciones_lista):
         print("[2] Listar habitaciones")
         print("[3] Baja de habitación")
         print("[4] Modificar habitación")
+        print("[5] Consultar habitación")
         print("-" * 50)
         print("[0] Volver al menú anterior")
         print("-" * 50)
- 
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
- 
+
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
+
         if opcion == 1:
             habitaciones_lista = alta_habitacion(habitaciones_lista)
         elif opcion == 2:
@@ -280,5 +281,26 @@ def menu_habitaciones(habitaciones_lista):
             habitaciones_lista = baja_habitacion(habitaciones_lista)
         elif opcion == 4:
             habitaciones_lista = modificar_habitacion(habitaciones_lista)
- 
+        elif opcion == 5:
+            habitaciones_lista = consultar_habitacion(habitaciones_lista)
+
+    return habitaciones_lista
+
+def consultar_habitacion(habitaciones_lista):
+    titulo = " Consultar habitación "
+    print(f"\n{titulo:-^50}")
+
+    if len(habitaciones_lista) == 0:
+        print("No hay habitaciones cargadas.")
+        return habitaciones_lista
+
+    numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación: ", 100, 999)
+    posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
+
+    if posicion == -1:
+        print("No existe una habitación con ese número.")
+    else:
+        mostrar_habitacion(habitaciones_lista[posicion])
+
+    val_datos.pausar_menu()
     return habitaciones_lista

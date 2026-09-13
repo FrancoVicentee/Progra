@@ -102,12 +102,13 @@ def menu_admin(empleados_dict):
         print("[2] Listar empleados")
         print("[3] Baja de empleado")
         print("[4] Modificar sueldo empleado")
+        print("[5] Consultar empleado")
         print("-" * 50)
         print("[0] Cerrar menú de administración")
         print("-" * 50)
- 
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
- 
+
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
+
         match opcion:
             case 1:
                 empleados_dict = alta_empleado(empleados_dict)
@@ -117,7 +118,28 @@ def menu_admin(empleados_dict):
                 empleados_dict = baja_empleado(empleados_dict)
             case 4:
                 empleados_dict = modificar_sueldo(empleados_dict)
+            case 5:
+                empleados_dict = consultar_empleado(empleados_dict)
             case 0:
                 print("Cerrando menú de administración.")
- 
+
+    return empleados_dict
+
+def consultar_empleado(empleados_dict):
+    print("\n--- Consultar empleado ---")
+    if len(empleados_dict) == 0:
+        print("No hay empleados registrados.")
+        return empleados_dict
+
+    legajo = val_datos.pedir_entero_rango("Ingrese legajo a consultar (100-999): ", 100, 999)
+
+    if legajo in empleados_dict:
+        datos = empleados_dict[legajo]
+        print(f"Legajo: {legajo}")
+        print(f"Nombre: {datos['nombre']}")
+        print(f"Sueldo: ${datos['sueldo']}")
+    else:
+        print("No existe un empleado con ese legajo.")
+
+    val_datos.pausar_menu()
     return empleados_dict

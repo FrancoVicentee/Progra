@@ -119,12 +119,13 @@ def menu_clientes(clientes_lista):
         print("[2] Listar clientes")
         print("[3] Baja de cliente")
         print("[4] Modificar cliente")
+        print("[5] Consultar cliente")
         print("-" * 50)
         print("[0] Volver al menú anterior")
         print("-" * 50)
- 
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
- 
+
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
+
         if opcion == 1:
             clientes_lista = ingresar_cliente(clientes_lista)
         elif opcion == 2:
@@ -133,5 +134,27 @@ def menu_clientes(clientes_lista):
             clientes_lista = baja_cliente(clientes_lista)
         elif opcion == 4:
             clientes_lista = modificar_cliente(clientes_lista)
- 
+        elif opcion == 5:
+            clientes_lista = consultar_cliente(clientes_lista)
+
+    return clientes_lista
+
+def consultar_cliente(clientes_lista):
+    print("\n--- Consultar cliente ---")
+    if len(clientes_lista) == 0:
+        print("No hay clientes cargados.")
+        return clientes_lista
+
+    id_consulta = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, generar_id(clientes_lista) - 1)
+    cliente = buscar_cliente_por_id(clientes_lista, id_consulta)
+
+    if cliente is False:
+        print("No existe un cliente con ese ID.")
+    else:
+        print(f"ID: {cliente[0]}")
+        print(f"Nombre: {cliente[1]}")
+        print(f"Apellido: {cliente[2]}")
+        print(f"DNI: {cliente[3]}")
+
+    val_datos.pausar_menu()
     return clientes_lista

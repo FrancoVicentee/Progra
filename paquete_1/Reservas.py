@@ -169,7 +169,7 @@ Menú de reservas para el sistema.
  
  
 def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
- 
+
     opcion = -1
     while opcion != 0:
         titulo = " Menú Principal > Menú de Reservas "
@@ -178,12 +178,14 @@ def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
         print("[2] Listar reservas")
         print("[3] Baja de reserva")
         print("[4] Modificar reserva")
+        print("[5] Ver reservas de un cliente")
+        print("[6] Ver reservas de una habitación")
         print("-" * 50)
         print("[0] Volver al menú anterior")
         print("-" * 50)
- 
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 4)
- 
+
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
+
         if opcion == 1:
             reservas_lista = alta_reserva(reservas_lista, clientes_lista, habitaciones_lista)
         elif opcion == 2:
@@ -192,5 +194,60 @@ def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
             reservas_lista = baja_reserva(reservas_lista)
         elif opcion == 4:
             reservas_lista = modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista)
- 
+        elif opcion == 5:
+            reservas_por_cliente(reservas_lista, clientes_lista)
+        elif opcion == 6:
+            reservas_por_habitacion(reservas_lista, habitaciones_lista)
+
     return reservas_lista
+
+def reservas_por_cliente(reservas_lista, clientes_lista):
+    print("\n--- Reservas de un cliente ---")
+    if len(clientes_lista) == 0:
+        print("No hay clientes cargados.")
+        return
+
+    id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, clientes_lista[-1][0])
+    while val_datos.existe_id(clientes_lista, id_cliente) == False:
+        print("No existe un cliente con ese ID.")
+        id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, clientes_lista[-1][0])
+
+    reservas_encontradas = [reserva for reserva in reservas_lista if reserva[1] == id_cliente]
+
+    if len(reservas_encontradas) == 0:
+        print("Este cliente no tiene reservas registradas.")
+    else:
+        print(f"{'ID':<5}{'Id_cliente':<13}{'Id_hab':<10}{'Ingreso':<15}{'Egreso':<15}")
+        for reserva in reservas_encontradas:
+            print(
+                f"{reserva[0]:<5}{reserva[1]:<13}{reserva[2]:<10}"
+                f"{reserva[3]:<15}{reserva[4]:<15}"
+            )
+
+    val_datos.pausar_menu()
+
+
+def reservas_por_habitacion(reservas_lista, habitaciones_lista):
+    print("\n--- Reservas de una habitación ---")
+    if len(habitaciones_lista) == 0:
+        print("No hay habitaciones cargadas.")
+        return
+
+    id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, habitaciones_lista[-1][0])
+    while val_datos.existe_id(habitaciones_lista, id_hab) == False:
+        print("No existe una habitación con ese ID.")
+        id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, habitaciones_lista[-1][0])
+
+    reservas_encontradas = [reserva for reserva in reservas_lista if reserva[2] == id_hab]
+
+    if len(reservas_encontradas) == 0:
+        print("Esta habitación no tiene reservas registradas.")
+    else:
+        print(f"{'ID':<5}{'Id_cliente':<13}{'Id_hab':<10}{'Ingreso':<15}{'Egreso':<15}")
+        for reserva in reservas_encontradas:
+            print(
+                f"{reserva[0]:<5}{reserva[1]:<13}{reserva[2]:<10}"
+                f"{reserva[3]:<15}{reserva[4]:<15}"
+            )
+
+    val_datos.pausar_menu()
