@@ -4,7 +4,7 @@ from paquete_1 import Clientes
 from paquete_1 import Habitaciones
 from paquete_1 import Reservas
 from paquete_1 import Administrador
-from paquete_2 import matriz
+from paquete_2 import estadisticas, matriz
 from paquete_2 import val_datos
     
 def login():
@@ -46,13 +46,14 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
         print("[2] Gestión de habitaciones")
         print("[3] Gestión de reservas")
         print("[4] Matrices - Ordenar y consultar datos")
-        print("[5] Menú de Administración (Empleados)")
+        print("[5] Ver estadísticas del hotel")
+        print("[6] Menú de Administración (Empleados)")
         print(f"{'-' * 50}")
-        print("[6] Cerrar sesión (Volver al login)")
+        print("[7] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
         print(f"{'-' * 50}")
  
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 7)
  
         match opcion:
             case 1:
@@ -64,8 +65,10 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
             case 4:
                 matriz.menu_matrices(clientes, habitaciones, reservas)
             case 5:
-                empleados_dict = Administrador.menu_admin(empleados_dict)
+                estadisticas.menu_estadisticas(clientes, habitaciones, reservas)
             case 6:
+                empleados_dict = Administrador.menu_admin(empleados_dict)
+            case 7:
                 print("\nCerrando sesión... Volviendo a la pantalla de inicio.")
                 menu_activo = False
             case 0:
@@ -85,12 +88,13 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
         print("[2] Gestión de habitaciones")
         print("[3] Gestión de reservas")
         print("[4] Matrices - Ordenar y consultar datos")
+        print("[5] Ver estadísticas del hotel")
         print(f"{'-' * 50}")
-        print("[5] Cerrar sesión (Volver al login)")
+        print("[6] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
         print(f"{'-' * 50}")
  
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
  
         match opcion:
             case 1:
@@ -102,6 +106,8 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
             case 4:
                 matriz.menu_matrices(clientes, habitaciones, reservas)
             case 5:
+                estadisticas.menu_estadisticas(clientes, habitaciones, reservas)
+            case 6:
                 print("\nCerrando sesión... Volviendo a la pantalla de inicio.")
                 menu_activo = False
             case 0:
@@ -139,6 +145,7 @@ if __name__ == "__main__":
         [3, 3, 2, '05/09/2026', '10/09/2026'],
         [4, 5, 5, '02/09/2026', '08/09/2026'],
         [5, 4, 4, '07/09/2026', '12/09/2026'],
+        [6, 2, 3, '10/03/2026', '15/03/2026'],
     ]
     
     sesion_activa = True

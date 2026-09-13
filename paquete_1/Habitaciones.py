@@ -1,14 +1,14 @@
 from paquete_2 import val_datos
- 
- 
- 
+
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""
  
 Funciones para el manejo de habitaciones en el sistema.
  
 """""""""""""""""""""""""""""""""""""""""""""""""""
- 
- 
+
+
 def alta_habitacion(habitaciones_lista):
     titulo = " Alta de habitaciones "
     print(f"\n{titulo:-^50}")
@@ -40,8 +40,8 @@ def alta_habitacion(habitaciones_lista):
     print("Habitación agregada correctamente.")
  
     return habitaciones_lista
- 
- 
+
+
 def listar_habitaciones(habitaciones_lista):
     titulo = " Listado de habitaciones "
     print(f"\n{titulo:-^55}")
@@ -65,8 +65,8 @@ def listar_habitaciones(habitaciones_lista):
  
         val_datos.pausar_menu()
     return habitaciones_lista
- 
- 
+
+
 def baja_habitacion(habitaciones_lista):
     titulo = " Baja de habitacion "
     print(f"\n{titulo:-^50}")
@@ -95,8 +95,8 @@ def baja_habitacion(habitaciones_lista):
             print("Operación cancelada. La habitación no fue eliminada.")
  
     return habitaciones_lista
- 
- 
+
+
 def modificar_habitacion(habitaciones_lista):
     titulo = " Modificación de habitacion "
     print(f"\n{titulo:-^50}")
@@ -182,8 +182,8 @@ def modificar_habitacion(habitaciones_lista):
         mostrar_habitacion(habitaciones_lista[posicion])
  
     return habitaciones_lista
- 
- 
+
+
 def mostrar_habitacion(habitacion):
     id_habitacion = habitacion[0]
     numero_habitacion = habitacion[1]
@@ -192,16 +192,16 @@ def mostrar_habitacion(habitacion):
     estado_habitacion = habitacion[4]
  
     print(f"{id_habitacion:<5}{numero_habitacion:<10}{tipo_habitacion:<12}{capacidad_habitacion:<12}{estado_habitacion:<15}")
- 
- 
+
+
 def existe_numero_habitacion(habitaciones_lista, numero):
     existe = False
     for habitacion in habitaciones_lista:
         if habitacion[1] == numero:
             existe = True
     return existe
- 
- 
+
+
 def existe_numero_en_otra_posicion(habitaciones_lista, numero, posicion_actual):
     existe = False
     indice = 0
@@ -210,8 +210,8 @@ def existe_numero_en_otra_posicion(habitaciones_lista, numero, posicion_actual):
             existe = True
         indice += 1
     return existe
- 
- 
+
+
 def buscar_posicion_por_numero(habitaciones_lista, numero):
     posicion = -1
     indice = 0
@@ -220,8 +220,8 @@ def buscar_posicion_por_numero(habitaciones_lista, numero):
             posicion = indice
         indice += 1
     return posicion
- 
- 
+
+
 def obtener_rango_capacidad(tipo):
     if tipo == "Simple":
         capacidad_minima = 1
@@ -234,8 +234,8 @@ def obtener_rango_capacidad(tipo):
         capacidad_maxima = 6
  
     return capacidad_minima, capacidad_maxima
- 
- 
+
+
 def generar_id_habitacion(habitaciones_lista):
     if len(habitaciones_lista) == 0:
         id_nuevo = 1
@@ -247,44 +247,6 @@ def generar_id_habitacion(habitaciones_lista):
         id_nuevo = id_maximo + 1
  
     return id_nuevo
- 
- 
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-Menú de habitaciones para el sistema.
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
- 
-def menu_habitaciones(habitaciones_lista):
-    opcion = -1
-    while opcion != 0:
-        titulo = " Menú Principal > Menú de Habitaciones "
-        print(f"\n{titulo:-^50}")
-        print("[1] Alta de habitación")
-        print("[2] Listar habitaciones")
-        print("[3] Baja de habitación")
-        print("[4] Modificar habitación")
-        print("[5] Consultar habitación")
-        print("-" * 50)
-        print("[0] Volver al menú anterior")
-        print("-" * 50)
-
-        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
-
-        if opcion == 1:
-            habitaciones_lista = alta_habitacion(habitaciones_lista)
-        elif opcion == 2:
-            habitaciones_lista = listar_habitaciones(habitaciones_lista)
-        elif opcion == 3:
-            habitaciones_lista = baja_habitacion(habitaciones_lista)
-        elif opcion == 4:
-            habitaciones_lista = modificar_habitacion(habitaciones_lista)
-        elif opcion == 5:
-            habitaciones_lista = consultar_habitacion(habitaciones_lista)
-
-    return habitaciones_lista
 
 def consultar_habitacion(habitaciones_lista):
     titulo = " Consultar habitación "
@@ -303,4 +265,45 @@ def consultar_habitacion(habitaciones_lista):
         mostrar_habitacion(habitaciones_lista[posicion])
 
     val_datos.pausar_menu()
+    return habitaciones_lista
+ 
+ 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+ 
+Menú de habitaciones para el sistema.
+ 
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+def menu_habitaciones(habitaciones_lista):
+    opcion = -1
+    while opcion != 0:
+        titulo = " Menú Principal > Menú de Habitaciones "
+        print(f"\n{titulo:-^50}")
+        print("[1] Alta de habitación")
+        print("[2] Listar habitaciones")
+        print("[3] Baja de habitación")
+        print("[4] Modificar habitación")
+        print("[5] Consultar habitación")
+        print("-" * 50)
+        print("[0] Volver al menú anterior")
+        print("-" * 50)
+
+        opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
+
+        match opcion:
+            case 1:
+                habitaciones_lista = alta_habitacion(habitaciones_lista)
+            case 2:
+                habitaciones_lista = listar_habitaciones(habitaciones_lista)
+            case 3:
+                habitaciones_lista = baja_habitacion(habitaciones_lista)
+            case 4:
+                habitaciones_lista = modificar_habitacion(habitaciones_lista)
+            case 5:
+                habitaciones_lista = consultar_habitacion(habitaciones_lista)
+            case 0:
+                print("Saliendo del menú de habitaciones...")
+
     return habitaciones_lista

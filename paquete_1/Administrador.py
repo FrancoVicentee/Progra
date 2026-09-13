@@ -1,14 +1,13 @@
 from paquete_2 import val_datos
- 
- 
- 
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""
  
 Funciones de administrador para el manejo de empleados en el sistema.
  
 """""""""""""""""""""""""""""""""""""""""""""""""""
- 
- 
+
+
 def alta_empleado(empleados_dict):
     print("\n--- Alta de Empleado ---")
     legajo = val_datos.pedir_entero_rango("Ingrese legajo (100-999): ", 100, 999)
@@ -22,8 +21,8 @@ def alta_empleado(empleados_dict):
         print("Error. El legajo ya existe.")
         
     return empleados_dict
- 
- 
+
+
 def listar_empleados(empleados_dict):
     print("\n--- Listado de Empleados ---")
     if len(empleados_dict) == 0:
@@ -42,8 +41,8 @@ def listar_empleados(empleados_dict):
             
     val_datos.pausar_menu()
     return empleados_dict
- 
- 
+
+
 def baja_empleado(empleados_dict):
     print("\n--- Baja de Empleado ---")
     if len(empleados_dict) == 0:
@@ -64,8 +63,8 @@ def baja_empleado(empleados_dict):
             print("Empleado no encontrado.")
             
     return empleados_dict
- 
- 
+
+
 def modificar_sueldo(empleados_dict):
     print("\n--- Modificar Sueldo de Empleado ---")
     if len(empleados_dict) == 0:
@@ -82,17 +81,31 @@ def modificar_sueldo(empleados_dict):
             print("Empleado no encontrado.")
             
     return empleados_dict
- 
- 
- 
- 
+
+def consultar_empleado(empleados_dict):
+    print("\n--- Consultar Empleado ---")
+    if len(empleados_dict) == 0:
+        print("No hay empleados registrados para consultar.")
+    else:
+        legajo = val_datos.pedir_entero_rango("Ingrese legajo a consultar (100-999): ", 100, 999)
+        
+        if legajo in empleados_dict:
+            empleado = empleados_dict[legajo]
+            print(f"Empleado encontrado: {empleado['nombre']} - Sueldo: ${empleado['sueldo']}")
+        else:
+            print("Empleado no encontrado.")
+            
+    val_datos.pausar_menu()
+    return empleados_dict
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""
  
 Menú de administración para el sistema.
  
 """""""""""""""""""""""""""""""""""""""""""""""""""
- 
- 
+
+
 def menu_admin(empleados_dict):
     opcion = -1
     while opcion != 0:
@@ -123,23 +136,4 @@ def menu_admin(empleados_dict):
             case 0:
                 print("Cerrando menú de administración.")
 
-    return empleados_dict
-
-def consultar_empleado(empleados_dict):
-    print("\n--- Consultar empleado ---")
-    if len(empleados_dict) == 0:
-        print("No hay empleados registrados.")
-        return empleados_dict
-
-    legajo = val_datos.pedir_entero_rango("Ingrese legajo a consultar (100-999): ", 100, 999)
-
-    if legajo in empleados_dict:
-        datos = empleados_dict[legajo]
-        print(f"Legajo: {legajo}")
-        print(f"Nombre: {datos['nombre']}")
-        print(f"Sueldo: ${datos['sueldo']}")
-    else:
-        print("No existe un empleado con ese legajo.")
-
-    val_datos.pausar_menu()
     return empleados_dict

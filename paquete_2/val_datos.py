@@ -158,7 +158,7 @@ def normalizar_capitalizado(texto):
  
  
 def es_tipo_valido(tipo):
-    tipos_validos = ["Simple", "Doble", "Suite"]
+    tipos_validos = ("Simple", "Doble", "Suite")
     return normalizar_capitalizado(tipo) in tipos_validos
  
  
@@ -171,7 +171,7 @@ def pedir_tipo_habitacion(mensaje):
  
  
 def es_estado_valido(estado):
-    estados_validos = ["Disponible", "Ocupada", "Mantenimiento"]
+    estados_validos = ("Disponible", "Ocupada", "Mantenimiento")
     return normalizar_capitalizado(estado) in estados_validos
  
  
