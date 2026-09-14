@@ -1,12 +1,8 @@
 # MÓDULOS
  
-from paquete_1 import Clientes
-from paquete_1 import Habitaciones
-from paquete_1 import Reservas
-from paquete_1 import Administrador
-from paquete_2 import estadisticas, matriz
-from paquete_2 import val_datos
-    
+from paquete_1 import Clientes, Administrador, Reservas, Habitaciones
+from paquete_2 import estadisticas, matriz, val_datos
+
 def login():
     
     usuarios = {

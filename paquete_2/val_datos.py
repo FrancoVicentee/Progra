@@ -27,7 +27,10 @@ def pedir_entero_rango(mensaje, desde, hasta):
         else:
             print("Error. Debe ingresar un número entero.")
     return valor
- 
+
+
+
+
 def validar_fecha(fecha):
  
     if len(fecha) != 10:
@@ -67,6 +70,11 @@ def pedir_fecha_valida(mensaje):
  
  
 def convertir_fecha_a_numero(fecha):
+    """
+    Toma una fecha en formato dd/mm/aaaa y la pasa a un numero
+    tipo aaaammdd. Lo hacemos asi para poder comparar fechas
+    facil con mayor o menor, en vez de comparar el texto y asi poder ordenarlas mas facil.
+    """
  
     dia = fecha[0:2]
     mes = fecha[3:5]
@@ -86,7 +94,6 @@ def comparar_fechas(fecha1, fecha2):
  
  
 def existe_id(lista, id_valor):
- 
     coincidencias = list(filter(lambda registro: registro[0] == id_valor, lista))
     return len(coincidencias) > 0
  
@@ -113,7 +120,7 @@ def pedir_nombre(mensaje):
     return nombre
  
  
-def es_apellido_valido(apellido):
+def es_palabra(apellido):
     patron = r"^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
     if re.match(patron, apellido):
         return True
@@ -123,26 +130,12 @@ def es_apellido_valido(apellido):
  
 def pedir_apellido(mensaje):
     apellido = input(mensaje)
-    while es_apellido_valido(apellido) == False:
+    while es_palabra(apellido) == False:
         print("Error. El apellido solo puede contener letras.")
         apellido = input(mensaje)
     return apellido
  
- 
-def es_nombre_empleado_valido(nombre):
-    patron = r"^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
-    if re.match(patron, nombre):
-        return True
-    else:
-        return False
- 
- 
-def pedir_nombre_empleado(mensaje):
-    nombre = input(mensaje)
-    while es_nombre_empleado_valido(nombre) == False:
-        print("Error. El nombre solo puede contener letras.")
-        nombre = input(mensaje)
-    return nombre
+
  
  
  
@@ -181,9 +174,8 @@ def pedir_estado_habitacion(mensaje):
         print("Error. Debe ingresar Disponible, Ocupada o Mantenimiento (mayúsculas o minúsculas).")
         estado = input(mensaje)
     return normalizar_capitalizado(estado)
- 
- 
- 
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""
  
 Funciones para imprimir mensajes en color (éxito / error).

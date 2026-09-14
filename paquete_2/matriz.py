@@ -76,6 +76,11 @@ def clientes_sin_reserva(clientes_lista, reservas_lista):
     return ids_sin_reserva
 
 def habitaciones_reservadas_ambos_semestres(habitaciones_lista, reservas_lista):
+    """
+    Funcion que crea dos conjuntos que se separan en habitaciones reservadas en el 
+    primer semestre y habitaciones reservadas en el segundo semestre. 
+    Luego hace la interseccion de ambos conjuntos para ver que habitaciones estan reservadas en ambos semestres.
+    """
     print("\n--- Habitaciones reservadas en ambos semestres ---")
     
     habitaciones_semestre_1 = {reserva[2] for reserva in reservas_lista if 1 <= int(reserva[3][3:5]) <= 6}
@@ -95,8 +100,12 @@ def habitaciones_reservadas_ambos_semestres(habitaciones_lista, reservas_lista):
     val_datos.pausar_menu()
     return habitaciones_ambos_semestres
 
+
 def listar_nombres_mayusculas(clientes_lista):
-    print("\n--- Nombres de clientes en mayúsculas (Uso de map) ---")
+    """
+    Funcion que utiliza map para crear una lista de 
+    nombres de clientes en mayusculas.
+    """
     nombres_mayusculas = list(map(lambda cliente: cliente[1].upper(), clientes_lista))
     
     for nombre in nombres_mayusculas:
@@ -123,7 +132,7 @@ def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
         print("[4] Ver habitaciones disponibles")
         print("[5] Buscar clientes por letra inicial")
         print("[6] Ver habitaciones reservadas en ambos semestres")
-        print("[7] ver clientes sin reservas")
+        print("[7] Ver clientes sin reservas")
         print("[8] Listar nombres en mayúsculas")
         print("-" * 50)
         print("[0] Volver al menú anterior")

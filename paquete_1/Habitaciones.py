@@ -237,16 +237,8 @@ def obtener_rango_capacidad(tipo):
 
 
 def generar_id_habitacion(habitaciones_lista):
-    if len(habitaciones_lista) == 0:
-        id_nuevo = 1
-    else:
-        id_maximo = habitaciones_lista[0][0]
-        for habitacion in habitaciones_lista:
-            if habitacion[0] > id_maximo:
-                id_maximo = habitacion[0]
-        id_nuevo = id_maximo + 1
- 
-    return id_nuevo
+    id_nuevo = list(map(lambda habitacion: habitacion[0], habitaciones_lista))
+    return max(id_nuevo) + 1
 
 def consultar_habitacion(habitaciones_lista):
     titulo = " Consultar habitación "

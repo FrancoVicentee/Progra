@@ -10,9 +10,11 @@ Funciones para el manejo de clientes en el sistema.
 
 
 def generar_id(clientes_lista):
-    if len(clientes_lista) == 0:
-        return 1
-    ids = [cliente[0] for cliente in clientes_lista]
+    """
+    Calcula el proximo id para un cliente nuevo utilizando map y max. 
+    La funcion devuelve 1 si la lista esta vacia.
+    """
+    ids = list(map(lambda cliente: cliente[0], clientes_lista))
     return max(ids) + 1
 
 

@@ -63,7 +63,13 @@ def buscar_reserva_por_id(reservas_lista, id_reserva):
  
  
 def existe_solapamiento(reservas_lista, indice_columna, id_valor, fecha_ingreso, fecha_egreso, id_reserva_excluida):
- 
+    """
+    Se fija si las fechas nuevas se cruzan con una reserva que ya existe.
+    Sirve tanto para chequear el cliente como la habitacion, dependiendo
+    que columna se le pase (1 para cliente, 2 para habitacion).
+    Devuelve True si se superponen las fechas, False si no.
+    """
+
     ingreso_nuevo = val_datos.convertir_fecha_a_numero(fecha_ingreso)
     
     egreso_nuevo = val_datos.convertir_fecha_a_numero(fecha_egreso)
@@ -81,6 +87,11 @@ def existe_solapamiento(reservas_lista, indice_columna, id_valor, fecha_ingreso,
  
  
 def pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, id_reserva_excluida):
+    """
+    Pide la fecha de ingreso y egreso y no deja seguir hasta que sean
+    validas, osea que el egreso sea despues del ingreso y que no se pisen
+    con otra reserva del mismo cliente o la misma habitacion.
+    """
  
     fechas_validas = False
     fecha_ingreso = ""
