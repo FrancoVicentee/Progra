@@ -38,7 +38,7 @@ def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
  
 def listar_reservas(reservas_lista):
     titulo = " Listado de reservas "
-    print(f"\n{titulo:-^60}")
+    print(f"\n{titulo:-^50}")
     if len(reservas_lista) == 0:
         print("No hay reservas registradas.")
     else:
@@ -47,7 +47,7 @@ def listar_reservas(reservas_lista):
             print(
                 f"{reserva[0]:<5}{reserva[1]:<13}{reserva[2]:<10}"
                 f"{reserva[3]:<15}{reserva[4]:<15}"
-            )       
+            )
     return reservas_lista
  
  
@@ -135,36 +135,66 @@ def baja_reserva(reservas_lista):
  
  
 def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
- 
+
     print("\n--- Modificación de reserva ---")
     if len(reservas_lista) == 0:
         print("No hay reservas registradas.")
         return reservas_lista
- 
+
     listar_reservas(reservas_lista)
- 
+
     id_reserva = val_datos.pedir_entero_rango(
         "Ingrese el ID de la reserva a modificar: ", 1, reservas_lista[-1][0]
     )
     encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_reserva)
- 
+
     if encontrado:
-        id_cliente = val_datos.pedir_entero_rango("Ingrese el nuevo ID de cliente: ", 1, clientes_lista[-1][0])
-        while val_datos.existe_id(clientes_lista, id_cliente) == False:
-            print("No existe un cliente con ese ID.")
-            id_cliente = val_datos.pedir_entero_rango("Ingrese el nuevo ID de cliente: ", 1, clientes_lista[-1][0])
- 
-        id_hab = val_datos.pedir_entero_rango("Ingrese el nuevo ID de habitación: ", 1, habitaciones_lista[-1][0])
-        while val_datos.existe_id(habitaciones_lista, id_hab) == False:
-            print("No existe una habitación con ese ID.")
-            id_hab = val_datos.pedir_entero_rango("Ingrese el nuevo ID de habitación: ", 1, habitaciones_lista[-1][0])
- 
-        reserva[1] = id_cliente
-        reserva[2] = id_hab
-        fecha_ingreso, fecha_egreso = pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, id_reserva)
-        reserva[3] = fecha_ingreso
-        reserva[4] = fecha_egreso
-        print("Reserva modificada correctamente.")
+        print("Deje vacío el campo si no desea modificarlo.")
+
+        id_cliente_nuevo = reserva[1]
+        entrada_cliente = input(f"ID de cliente ({reserva[1]}): ")
+        if entrada_cliente != "":
+            while val_datos.es_entero(entrada_cliente) == False or val_datos.existe_id(clientes_lista, int(entrada_cliente)) == False:
+                print("Error. Debe ingresar un ID de cliente existente.")
+                entrada_cliente = input(f"ID de cliente ({reserva[1]}): ")
+            id_cliente_nuevo = int(entrada_cliente)
+
+        id_hab_nuevo = reserva[2]
+        entrada_hab = input(f"ID de habitación ({reserva[2]}): ")
+        if entrada_hab != "":
+            while val_datos.es_entero(entrada_hab) == False or val_datos.existe_id(habitaciones_lista, int(entrada_hab)) == False:
+                print("Error. Debe ingresar un ID de habitación existente.")
+                entrada_hab = input(f"ID de habitación ({reserva[2]}): ")
+            id_hab_nuevo = int(entrada_hab)
+
+        fecha_ingreso_nueva = reserva[3]
+        entrada_ingreso = input(f"Fecha de ingreso ({reserva[3]}): ")
+        if entrada_ingreso != "":
+            while val_datos.validar_fecha(entrada_ingreso) == False:
+                print("Error. Formato de fecha inválido. Use dd/mm/aaaa.")
+                entrada_ingreso = input(f"Fecha de ingreso ({reserva[3]}): ")
+            fecha_ingreso_nueva = entrada_ingreso
+
+        fecha_egreso_nueva = reserva[4]
+        entrada_egreso = input(f"Fecha de egreso ({reserva[4]}): ")
+        if entrada_egreso != "":
+            while val_datos.validar_fecha(entrada_egreso) == False:
+                print("Error. Formato de fecha inválido. Use dd/mm/aaaa.")
+                entrada_egreso = input(f"Fecha de egreso ({reserva[4]}): ")
+            fecha_egreso_nueva = entrada_egreso
+
+        if val_datos.comparar_fechas(fecha_egreso_nueva, fecha_ingreso_nueva) != 1:
+            print("Error. La fecha de egreso debe ser posterior al ingreso. No se modificó la reserva.")
+        elif existe_solapamiento(reservas_lista, 1, id_cliente_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
+            print("Error. El cliente ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
+        elif existe_solapamiento(reservas_lista, 2, id_hab_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
+            print("Error. La habitación ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
+        else:
+            reserva[1] = id_cliente_nuevo
+            reserva[2] = id_hab_nuevo
+            reserva[3] = fecha_ingreso_nueva
+            reserva[4] = fecha_egreso_nueva
+            print("Reserva modificada correctamente.")
     else:
         print("No existe una reserva con ese ID.")
     return reservas_lista

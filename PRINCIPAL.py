@@ -44,10 +44,10 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
         print("[4] Matrices - Ordenar y consultar datos")
         print("[5] Ver estadísticas del hotel")
         print("[6] Menú de Administración (Empleados)")
-        print(f"{'-' * 50}")
+        print("-" * 50)
         print("[7] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
-        print(f"{'-' * 50}")
+        print("-" * 50)
  
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 7)
  
@@ -85,10 +85,10 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
         print("[3] Gestión de reservas")
         print("[4] Matrices - Ordenar y consultar datos")
         print("[5] Ver estadísticas del hotel")
-        print(f"{'-' * 50}")
+        print("-" * 50)
         print("[6] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
-        print(f"{'-' * 50}")
+        print("-" * 50)
  
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
  

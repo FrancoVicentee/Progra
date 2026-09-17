@@ -120,4 +120,4 @@ def menu_estadisticas(clientes_lista, habitaciones_lista, reservas_lista):
             case 6:
                 resumen_estadistico(clientes_lista, habitaciones_lista, reservas_lista)
             case 0:
-             print("Saliendo del menú de estadísticas...")
+                print("Saliendo del menú de estadísticas...")

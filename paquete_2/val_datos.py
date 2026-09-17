@@ -1,16 +1,7 @@
 import re
  
 def es_entero(cadena):
- 
-    if cadena == "":
-        return False
-    inicio = 1 if cadena[0] == "-" else 0
-    if inicio == 1 and len(cadena) == 1:
-        return False
-    for i in range(inicio, len(cadena)):
-        if cadena[i] < "0" or cadena[i] > "9":
-            return False
-    return True
+    return cadena.isnumeric()
  
  
 def pedir_entero_rango(mensaje, desde, hasta):
@@ -104,33 +95,30 @@ def pausar_menu():
         opcion = pedir_entero_rango("\nPresione 0 para volver: ", 0, 0)
  
  
-def es_nombre_valido(nombre):
-    patron = r"^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
-    if re.match(patron, nombre):
-        return True
-    else:
+def es_texto(texto):
+    if texto == "":
         return False
+    if texto.isspace():
+        return False
+    if not texto.replace(" ", "").isalpha():
+        return False
+    return True
  
  
 def pedir_nombre(mensaje):
     nombre = input(mensaje)
-    while es_nombre_valido(nombre) == False:
+    while es_texto(nombre) == False:
         print("Error. El nombre solo puede contener letras.")
         nombre = input(mensaje)
     return nombre
  
  
-def es_palabra(apellido):
-    patron = r"^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
-    if re.match(patron, apellido):
-        return True
-    else:
-        return False
+
  
  
 def pedir_apellido(mensaje):
     apellido = input(mensaje)
-    while es_palabra(apellido) == False:
+    while es_texto(apellido) == False:
         print("Error. El apellido solo puede contener letras.")
         apellido = input(mensaje)
     return apellido
