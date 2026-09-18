@@ -25,7 +25,7 @@ def ordenar_por_numero(lista_de_habitaciones):
 #ordena la lista de reservas por fecha de ingreso, utilizando el cuarto elemento de cada reserva como clave de ordenamiento
 
 def ordenar_por_fecha_ingreso(lista_de_reservas):
-    lista_de_reservas.sort(key=lambda reserva: reserva[3])
+    lista_de_reservas.sort(key=lambda reserva: val_datos.convertir_fecha_a_numero(reserva[3]))
     print("Reservas ordenadas por fecha de ingreso:")
     for reserva in lista_de_reservas:
         print(reserva)

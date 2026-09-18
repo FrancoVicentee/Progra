@@ -1,13 +1,10 @@
 from paquete_2 import val_datos
  
- 
- 
 """""""""""""""""""""""""""""""""""""""""""""""""""
  
 Funciones para el manejo de reservas en el sistema.
  
 """""""""""""""""""""""""""""""""""""""""""""""""""
- 
  
 def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
  
@@ -17,7 +14,12 @@ def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
         print("Debe existir al menos un cliente y una habitación registrados para crear una reserva.")
         return reservas_lista
  
-    nuevo_id = reservas_lista[-1][0] + 1 if len(reservas_lista) > 0 else 1
+    # FIX: Buscar el ID máximo real para evitar duplicados si la lista fue alterada por un ordenamiento
+    if len(reservas_lista) > 0:
+        ids = list(map(lambda reserva: reserva[0], reservas_lista))
+        nuevo_id = max(ids) + 1
+    else:
+        nuevo_id = 1
  
     id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
     while val_datos.existe_id(clientes_lista, id_cliente) == False:
@@ -71,7 +73,6 @@ def existe_solapamiento(reservas_lista, indice_columna, id_valor, fecha_ingreso,
     """
 
     ingreso_nuevo = val_datos.convertir_fecha_a_numero(fecha_ingreso)
-    
     egreso_nuevo = val_datos.convertir_fecha_a_numero(fecha_egreso)
  
     hay_solapamiento = False
@@ -230,14 +231,11 @@ def info_reservas(reservas_lista, clientes_lista, habitaciones_lista):
     val_datos.pausar_menu()
     return reservas_lista
  
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""
  
 Menú de reservas para el sistema.
  
 """""""""""""""""""""""""""""""""""""""""""""""""""
-
 
 def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
 
@@ -272,6 +270,3 @@ def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
                 print("Saliendo del menú de reservas...")
 
     return reservas_lista
-
-
-    
