@@ -163,6 +163,8 @@ def pedir_estado_habitacion(mensaje):
     return normalizar_capitalizado(estado)
 
 
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""
  
 Funciones para imprimir mensajes en color (éxito / error).

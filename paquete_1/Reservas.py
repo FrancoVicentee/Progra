@@ -1,10 +1,6 @@
 from paquete_2 import val_datos
  
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-Funciones para el manejo de reservas en el sistema.
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+
  
 def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
  
@@ -230,15 +226,14 @@ def info_reservas(reservas_lista, clientes_lista, habitaciones_lista):
 
     val_datos.pausar_menu()
     return reservas_lista
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-Menú de reservas para el sistema.
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
 
 def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
-
+    """
+    Menu principal para gestionar las reservas.
+    """
     opcion = -1
     while opcion != 0:
         titulo = " Menú Principal > Menú de Reservas "

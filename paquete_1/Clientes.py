@@ -1,13 +1,6 @@
 from paquete_2 import val_datos
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-Funciones para el manejo de clientes en el sistema.
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
 
 def generar_id(clientes_lista):
     """
@@ -81,26 +74,37 @@ def modificar_cliente(clientes_lista):
     if len(clientes_lista) == 0:
         print("No hay clientes cargados.")
         return clientes_lista
- 
+
     id_mod = val_datos.pedir_entero_rango("Ingrese el ID del cliente a modificar: ", 1, generar_id(clientes_lista) - 1)
     cliente = buscar_cliente_por_id(clientes_lista, id_mod)
- 
+
     if cliente is False:
         print("No existe un cliente con ese ID.")
         return clientes_lista
- 
+
     print("Deje vacío el campo si no desea modificarlo.")
-    nuevo_nombre = val_datos.pedir_nombre(f"Nombre ({cliente[1]}): ")
-    nuevo_apellido = val_datos.pedir_apellido(f"Apellido ({cliente[2]}): ")
-    nuevo_dni = val_datos.pedir_entero_rango(f"DNI ({cliente[3]}): ", 100000, 100000000)
- 
+
+    nuevo_nombre = input(f"Nombre ({cliente[1]}): ")
     if nuevo_nombre != "":
+        while val_datos.es_texto(nuevo_nombre) == False:
+            print("Error. El nombre solo puede contener letras.")
+            nuevo_nombre = input(f"Nombre ({cliente[1]}): ")
         cliente[1] = nuevo_nombre
+
+    nuevo_apellido = input(f"Apellido ({cliente[2]}): ")
     if nuevo_apellido != "":
+        while val_datos.es_texto(nuevo_apellido) == False:
+            print("Error. El apellido solo puede contener letras.")
+            nuevo_apellido = input(f"Apellido ({cliente[2]}): ")
         cliente[2] = nuevo_apellido
+
+    nuevo_dni = input(f"DNI ({cliente[3]}): ")
     if nuevo_dni != "":
+        while val_datos.es_entero(nuevo_dni) == False or int(nuevo_dni) < 100000 or int(nuevo_dni) > 100000000:
+            print("Error. Ingrese un DNI válido (100000-100000000).")
+            nuevo_dni = input(f"DNI ({cliente[3]}): ")
         cliente[3] = int(nuevo_dni)
- 
+
     print("Cliente modificado correctamente.")
     return clientes_lista
 
@@ -125,13 +129,12 @@ def consultar_cliente(clientes_lista):
     return clientes_lista
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-Menú de clientes para el sistema.
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+
 
 def menu_clientes(clientes_lista):
+    """
+    Menu principal para gestionar las habitaciones.
+    """
     opcion = -1
     while opcion != 0:
         titulo = " Menú Principal > Menú de Clientes "

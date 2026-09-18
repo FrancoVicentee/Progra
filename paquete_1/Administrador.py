@@ -1,13 +1,6 @@
 from paquete_2 import val_datos
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-Funciones de administrador para el manejo de empleados en el sistema.
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
 def alta_empleado(empleados_dict):
     print("\n--- Alta de Empleado ---")
     legajo = val_datos.pedir_entero_rango("Ingrese legajo (100-1000): ", 100, 1000)
@@ -99,14 +92,12 @@ def consultar_empleado(empleados_dict):
     return empleados_dict
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-Menú de administración para el sistema.
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def menu_admin(empleados_dict):
+    """
+    Menu principal para gestionar las operaciones de administración de empleados.
+    """
     opcion = -1
     while opcion != 0:
         titulo = " Menú Administración "

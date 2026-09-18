@@ -82,7 +82,13 @@ def resumen_estadistico(clientes_lista, habitaciones_lista, reservas_lista):
 
     val_datos.pausar_menu()
 
+
+
+
 def menu_estadisticas(clientes_lista, habitaciones_lista, reservas_lista):
+    """
+    Menu principal para gestionar las estadísticas del sistema.
+    """
     opcion = -1
 
     while opcion != 0:

@@ -114,13 +114,12 @@ def listar_nombres_mayusculas(clientes_lista):
 
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-Menú de matrices para el sistema.
- 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+
  
 def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
+    """
+    Menu principal para gestionar las matrices del sistema.
+    """
     opcion = -1
 
     while opcion != 0:
