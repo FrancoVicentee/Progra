@@ -10,11 +10,11 @@ Funciones de administrador para el manejo de empleados en el sistema.
 
 def alta_empleado(empleados_dict):
     print("\n--- Alta de Empleado ---")
-    legajo = val_datos.pedir_entero_rango("Ingrese legajo (100-999): ", 100, 999)
+    legajo = val_datos.pedir_entero_rango("Ingrese legajo (100-1000): ", 100, 1000)
     
     if legajo not in empleados_dict:
         nombre = val_datos.pedir_nombre("Nombre del empleado: ")
-        sueldo = val_datos.pedir_entero_rango("Sueldo: $", 100000, 9999999)
+        sueldo = val_datos.pedir_entero_rango("Sueldo: $", 100000, 10000000)
         empleados_dict[legajo] = {"nombre": nombre, "sueldo": sueldo}
         print("Empleado registrado correctamente.")
     else:
@@ -48,7 +48,7 @@ def baja_empleado(empleados_dict):
     if len(empleados_dict) == 0:
         print("No hay empleados registrados para dar de baja.")
     else:
-        legajo = val_datos.pedir_entero_rango("Ingrese legajo a dar de baja (100-999): ", 100, 999)
+        legajo = val_datos.pedir_entero_rango("Ingrese legajo a dar de baja (100-1000): ", 100, 1000)
         
         if legajo in empleados_dict:
             print(f"Empleado encontrado: {empleados_dict[legajo]['nombre']}")
@@ -70,11 +70,11 @@ def modificar_sueldo(empleados_dict):
     if len(empleados_dict) == 0:
         print("No hay empleados registrados para modificar.")
     else:
-        legajo = val_datos.pedir_entero_rango("Ingrese legajo a modificar (100-999): ", 100, 999)
+        legajo = val_datos.pedir_entero_rango("Ingrese legajo a modificar (100-999): ", 100, 1000)
         
         if legajo in empleados_dict:
             print(f"Empleado actual: {empleados_dict[legajo]['nombre']} - Sueldo: ${empleados_dict[legajo]['sueldo']}")
-            nuevo_sueldo = val_datos.pedir_entero_rango("Nuevo sueldo: $", 100000, 9999999)
+            nuevo_sueldo = val_datos.pedir_entero_rango("Nuevo sueldo: $", 100000, 10000000)
             empleados_dict[legajo]["sueldo"] = nuevo_sueldo
             print("Sueldo actualizado correctamente.")
         else:
@@ -87,7 +87,7 @@ def consultar_empleado(empleados_dict):
     if len(empleados_dict) == 0:
         print("No hay empleados registrados para consultar.")
     else:
-        legajo = val_datos.pedir_entero_rango("Ingrese legajo a consultar (100-999): ", 100, 999)
+        legajo = val_datos.pedir_entero_rango("Ingrese legajo a consultar (100-999): ", 100, 1000)
         
         if legajo in empleados_dict:
             empleado = empleados_dict[legajo]

@@ -10,16 +10,18 @@ Funciones para el manejo de habitaciones en el sistema.
  
  
 def alta_habitacion(habitaciones_lista):
+    """Solicita los datos validados al usuario y registra una nueva habitación en el sistema."""
+
     titulo = " Alta de habitaciones "
     print(f"\n{titulo:-^50}")
  
  
-    numero = val_datos.pedir_entero_rango("Ingrese el número de habitación: ", 100, 999)
+    numero = val_datos.pedir_entero_rango("Ingrese el número de habitación: ", 100, 1000)
  
     numero_existe = existe_numero_habitacion(habitaciones_lista, numero)
     while numero_existe == True:
         print("Error. Ya existe una habitación con ese número.")
-        numero = val_datos.pedir_entero_rango("Ingrese el número de habitación: ", 100, 999)
+        numero = val_datos.pedir_entero_rango("Ingrese el número de habitación: ", 100, 1000)
         numero_existe = existe_numero_habitacion(habitaciones_lista, numero)
  
     tipo = val_datos.pedir_tipo_habitacion("Ingrese el tipo de habitación (Simple/Doble/Suite): ")
@@ -43,6 +45,8 @@ def alta_habitacion(habitaciones_lista):
  
  
 def listar_habitaciones(habitaciones_lista):
+    """Imprime en pantalla todas las habitaciones registradas con formato de tabla."""
+    
     titulo = " Listado de habitaciones "
     print(f"\n{titulo:-^50}")
 
@@ -74,13 +78,13 @@ def baja_habitacion(habitaciones_lista):
     if len(habitaciones_lista) == 0:
         print("No hay habitaciones cargadas.")
     else:
-        numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación a dar de baja: ", 100, 999)
+        numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación a dar de baja: ", 100, 1000)
  
         posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
  
         while posicion == -1:
             print("Error. No existe una habitación con ese número.")
-            numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación a dar de baja: ", 100, 999)
+            numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación a dar de baja: ", 100, 1000)
             posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
  
         print("\nSe encontró la siguiente habitación:")
@@ -104,13 +108,13 @@ def modificar_habitacion(habitaciones_lista):
     if len(habitaciones_lista) == 0:
         print("No hay habitaciones cargadas.")
     else:
-        numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación a modificar: ", 100, 999)
+        numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación a modificar: ", 100, 1000)
 
         posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
 
         while posicion == -1:
             print("Error. No existe una habitación con ese número.")
-            numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación a modificar: ", 100, 999)
+            numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación a modificar: ", 100, 1000)
             posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
 
         print("\nSe encontró la siguiente habitación:")
@@ -137,11 +141,11 @@ def modificar_habitacion(habitaciones_lista):
         tipo_vigente = habitaciones_lista[posicion][2]
         capacidad_minima, capacidad_maxima = obtener_rango_capacidad(tipo_vigente)
         capacidad_actual = habitaciones_lista[posicion][3]
-        entrada_capacidad = input(f"Capacidad ({capacidad_actual}, rango {capacidad_minima}-{capacidad_maxima}): ")
+        entrada_capacidad = val_datos.pedir_entero_rango(f"Capacidad ({capacidad_actual}, rango {capacidad_minima}-{capacidad_maxima}): ", capacidad_minima, capacidad_maxima)
         if entrada_capacidad != "":
             while val_datos.es_entero(entrada_capacidad) == False or int(entrada_capacidad) < capacidad_minima or int(entrada_capacidad) > capacidad_maxima:
                 print(f"Error. Ingrese un valor entre {capacidad_minima} y {capacidad_maxima}.")
-                entrada_capacidad = input(f"Capacidad ({capacidad_actual}, rango {capacidad_minima}-{capacidad_maxima}): ")
+                entrada_capacidad = val_datos.pedir_entero_rango(f"Capacidad ({capacidad_actual}, rango {capacidad_minima}-{capacidad_maxima}): ", capacidad_minima, capacidad_maxima)
             habitaciones_lista[posicion][3] = int(entrada_capacidad)
         elif capacidad_actual < capacidad_minima or capacidad_actual > capacidad_maxima:
             print(f"La capacidad actual ({capacidad_actual}) no es válida para el tipo {tipo_vigente}.")
@@ -223,11 +227,8 @@ def generar_id_habitacion(habitaciones_lista):
     if len(habitaciones_lista) == 0:
         id_nuevo = 1
     else:
-        id_maximo = habitaciones_lista[0][0]
-        for habitacion in habitaciones_lista:
-            if habitacion[0] > id_maximo:
-                id_maximo = habitacion[0]
-        id_nuevo = id_maximo + 1
+        ids = list(map(lambda habitacion: habitacion[0], habitaciones_lista))
+        id_nuevo = max(ids) + 1
  
     return id_nuevo
  
@@ -256,16 +257,19 @@ def menu_habitaciones(habitaciones_lista):
 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 5)
 
-        if opcion == 1:
-            habitaciones_lista = alta_habitacion(habitaciones_lista)
-        elif opcion == 2:
-            habitaciones_lista = listar_habitaciones(habitaciones_lista)
-        elif opcion == 3:
-            habitaciones_lista = baja_habitacion(habitaciones_lista)
-        elif opcion == 4:
-            habitaciones_lista = modificar_habitacion(habitaciones_lista)
-        elif opcion == 5:
-            habitaciones_lista = consultar_habitacion(habitaciones_lista)
+        match opcion:
+            case 1:
+                habitaciones_lista = alta_habitacion(habitaciones_lista)
+            case 2:
+                habitaciones_lista = listar_habitaciones(habitaciones_lista)
+            case 3:
+                habitaciones_lista = baja_habitacion(habitaciones_lista)
+            case 4:
+                habitaciones_lista = modificar_habitacion(habitaciones_lista)
+            case 5:
+                habitaciones_lista = consultar_habitacion(habitaciones_lista)
+            case 0:
+                print("Volviendo al menú anterior...")
 
     return habitaciones_lista
 
@@ -277,7 +281,7 @@ def consultar_habitacion(habitaciones_lista):
         print("No hay habitaciones cargadas.")
         return habitaciones_lista
 
-    numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación: ", 100, 999)
+    numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación: ", 100, 1000)
     posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
 
     if posicion == -1:

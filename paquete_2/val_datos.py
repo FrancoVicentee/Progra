@@ -1,6 +1,8 @@
 import re
  
 def es_entero(cadena):
+    """Verifica si la cadena ingresada contiene únicamente caracteres numéricos."""
+    
     return cadena.isnumeric()
  
  
@@ -96,13 +98,10 @@ def pausar_menu():
  
  
 def es_texto(texto):
-    if texto == "":
-        return False
-    if texto.isspace():
-        return False
-    if not texto.replace(" ", "").isalpha():
-        return False
-    return True
+    patron = r"^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
+    if re.match(patron, texto):
+        return True
+    return False
  
  
 def pedir_nombre(mensaje):

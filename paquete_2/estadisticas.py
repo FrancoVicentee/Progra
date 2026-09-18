@@ -3,6 +3,8 @@ from paquete_2 import val_datos
 from functools import reduce
 
 def calcular_capacidad_total(lista_de_habitaciones):
+    """Calcula la suma total de las capacidades de todas las habitaciones utilizando la función reduce."""
+
     capacidad_total = reduce(lambda total, habitacion: total + habitacion[3], lista_de_habitaciones, 0)
     print(f"Capacidad total del hotel: {capacidad_total} personas")
     val_datos.pausar_menu()
@@ -52,6 +54,8 @@ def porcentaje_ocupacion(habitaciones_lista):
 
 
 def habitacion_capacidad_max_min(habitaciones_lista):
+    """Identifica y muestra las habitaciones con la mayor y menor capacidad utilizando funciones lambda."""
+
     print("\n--- Habitación con mayor y menor capacidad ---")
     if len(habitaciones_lista) == 0:
         print("No hay habitaciones cargadas.")

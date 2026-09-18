@@ -4,6 +4,8 @@ from paquete_1 import Clientes, Administrador, Reservas, Habitaciones
 from paquete_2 import estadisticas, matriz, val_datos
 
 def login():
+    """Función para manejar el inicio de sesión del usuario. 
+    Consulta un diccionario de usuarios y contraseñas para validar roles, y permite al usuario ingresar sus credenciales."""
     
     usuarios = {
         "admin": ("hotel123", "ADMIN"),
@@ -32,6 +34,8 @@ def login():
     return acceso_concedido, rol_usuario
  
 def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
+    """Función para mostrar el menú principal para administradores. Permite gestionar clientes, habitaciones, reservas, matrices, estadísticas del hotel y empleados."""
+
     menu_activo = True
     salir_del_programa = False
     
@@ -74,6 +78,8 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
     return salir_del_programa
  
 def menu_principal_empleados(clientes, habitaciones, reservas):
+    """Función para mostrar el menú principal para empleados. Permite gestionar clientes, habitaciones, reservas, matrices y estadísticas del hotel."""
+
     menu_activo = True
     salir_del_programa = False
     
@@ -113,7 +119,8 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
     return salir_del_programa
  
 if __name__ == "__main__":
-    
+
+    #Datos hardcodeados
     empleados_dict = {
         101: {"nombre": "Fran Cino", "sueldo": 550000},
         102: {"nombre": "Benicio Beaudean", "sueldo": 670000}
@@ -143,7 +150,7 @@ if __name__ == "__main__":
         [5, 4, 4, '07/09/2026', '12/09/2026'],
         [6, 2, 3, '10/03/2026', '15/03/2026'],
     ]
-    
+
     sesion_activa = True
     while sesion_activa == True:
         acceso, rol = login()
@@ -158,5 +165,6 @@ if __name__ == "__main__":
                 sesion_activa = False 
         else:
             sesion_activa = False 
+
             
     print("\nSaliendo del programa, ¡Hasta luego!")

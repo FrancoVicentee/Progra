@@ -19,15 +19,15 @@ def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
  
     nuevo_id = reservas_lista[-1][0] + 1 if len(reservas_lista) > 0 else 1
  
-    id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, clientes_lista[-1][0])
+    id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
     while val_datos.existe_id(clientes_lista, id_cliente) == False:
         print("No existe un cliente con ese ID.")
-        id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, clientes_lista[-1][0])
+        id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
  
-    id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, habitaciones_lista[-1][0])
+    id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
     while val_datos.existe_id(habitaciones_lista, id_hab) == False:
         print("No existe una habitación con ese ID.")
-        id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, habitaciones_lista[-1][0])
+        id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
  
     fecha_ingreso, fecha_egreso = pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, -1)
  
@@ -121,9 +121,7 @@ def baja_reserva(reservas_lista):
         return reservas_lista
  
     listar_reservas(reservas_lista)
-    id_reserva = val_datos.pedir_entero_rango(
-        "Ingrese el ID de la reserva a eliminar: ", 1, reservas_lista[-1][0]
-    )
+    id_reserva = val_datos.pedir_entero_rango("Ingrese el ID de la reserva: ", 1, 1000)
     encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_reserva)
  
     if encontrado:
@@ -143,9 +141,7 @@ def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
 
     listar_reservas(reservas_lista)
 
-    id_reserva = val_datos.pedir_entero_rango(
-        "Ingrese el ID de la reserva a modificar: ", 1, reservas_lista[-1][0]
-    )
+    id_reserva = val_datos.pedir_entero_rango("Ingrese el ID de la reserva: ", 1, 1000)
     encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_reserva)
 
     if encontrado:
@@ -205,8 +201,7 @@ def info_reservas(reservas_lista, clientes_lista, habitaciones_lista):
         print("No hay reservas registradas.")
         return reservas_lista
 
-    id_maximo = reservas_lista[-1][0]
-    id_consulta = val_datos.pedir_entero_rango("Ingrese el ID de la reserva: ", 1, id_maximo)
+    id_consulta = val_datos.pedir_entero_rango("Ingrese el ID de la reserva: ", 1, 1000)
     
     encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_consulta)
 

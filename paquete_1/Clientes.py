@@ -15,6 +15,8 @@ def generar_id(clientes_lista):
     La funcion devuelve 1 si la lista esta vacia.
     """
     ids = list(map(lambda cliente: cliente[0], clientes_lista))
+    if len(ids) == 0:
+        return 1
     return max(ids) + 1
 
 
@@ -22,7 +24,7 @@ def ingresar_cliente(clientes_lista):
     print("\n--- Ingresar cliente ---")
     nombre = val_datos.pedir_nombre("Nombre: ")
     apellido = val_datos.pedir_apellido("Apellido: ")
-    dni = val_datos.pedir_entero_rango("DNI: ", 100000, 99999999)
+    dni = val_datos.pedir_entero_rango("DNI: ", 100000, 100000000)
  
     nuevo_id = generar_id(clientes_lista)
     nuevo_cliente = [nuevo_id, nombre, apellido, dni]
@@ -88,9 +90,9 @@ def modificar_cliente(clientes_lista):
         return clientes_lista
  
     print("Deje vacío el campo si no desea modificarlo.")
-    nuevo_nombre = input(f"Nombre ({cliente[1]}): ")
-    nuevo_apellido = input(f"Apellido ({cliente[2]}): ")
-    nuevo_dni = val_datos.pedir_entero_rango(f"DNI ({cliente[3]}): ", 100000, 99999999)
+    nuevo_nombre = val_datos.pedir_nombre(f"Nombre ({cliente[1]}): ")
+    nuevo_apellido = val_datos.pedir_apellido(f"Apellido ({cliente[2]}): ")
+    nuevo_dni = val_datos.pedir_entero_rango(f"DNI ({cliente[3]}): ", 100000, 100000000)
  
     if nuevo_nombre != "":
         cliente[1] = nuevo_nombre
