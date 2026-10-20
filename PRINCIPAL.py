@@ -1,25 +1,28 @@
 # MÓDULOS
- 
-from paquete_1 import Clientes, Administrador, Reservas, Habitaciones
+
+from gestion import Clientes, Administrador, Reservas, Habitaciones
 from utilidades import estadisticas, matriz, val_datos
 
+
 def login():
-    """Función para manejar el inicio de sesión del usuario. 
-    Consulta un diccionario de usuarios y contraseñas para validar roles, y permite al usuario ingresar sus credenciales."""
-    
+    """Función para manejar el inicio de sesión del usuario.
+    Consulta un diccionario de usuarios y contraseñas para validar roles, y permite al usuario ingresar sus credenciales.
+    Devuelve una tupla (acceso_concedido, rol_usuario)."""
+
     usuarios = {
         "admin": ("hotel123", "ADMIN"),
         "recepcion": ("emp123", "EMPLEADO"),
     }
-    
+
     intentos = 3
     acceso_concedido = False
     rol_usuario = ""
-    
+
     while intentos > 0 and acceso_concedido == False:
-        usuario_try = input("\nIngrese el usuario: ")
+        # El usuario no distingue mayusculas ni espacios en los extremos; la contraseña si.
+        usuario_try = input("\nIngrese el usuario: ").strip().lower()
         contrasena_try = input("Ingrese la contraseña: ")
-        
+
         if usuario_try in usuarios and usuarios[usuario_try][0] == contrasena_try:
             val_datos.imprimir_exito(f"\n¡Sesión iniciada correctamente como {usuarios[usuario_try][1]}!")
             acceso_concedido = True
@@ -30,15 +33,17 @@ def login():
                 val_datos.imprimir_error(f"Credenciales incorrectas. Intentos restantes: {intentos}")
             else:
                 val_datos.imprimir_error("Has llegado al límite de intentos, tu sesión ha sido bloqueada.")
-                
+
     return acceso_concedido, rol_usuario
- 
+
+
 def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
-    """Función para mostrar el menú principal para administradores. Permite gestionar clientes, habitaciones, reservas, matrices, estadísticas del hotel y empleados."""
+    """Función para mostrar el menú principal para administradores. Permite gestionar clientes, habitaciones, reservas,
+    matrices, estadísticas del hotel y empleados. Devuelve True si el usuario eligió cerrar el programa."""
 
     menu_activo = True
     salir_del_programa = False
-    
+
     while menu_activo == True:
         titulo = " Menú Principal (ADMIN) "
         print(f"\n{titulo:-^50}")
@@ -52,14 +57,14 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
         print("[7] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
         print("-" * 50)
- 
+
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 7)
- 
+
         match opcion:
             case 1:
-                clientes = Clientes.menu_clientes(clientes)
+                clientes = Clientes.menu_clientes(clientes, reservas, habitaciones)
             case 2:
-                habitaciones = Habitaciones.menu_habitaciones(habitaciones)
+                habitaciones = Habitaciones.menu_habitaciones(habitaciones, reservas, clientes)
             case 3:
                 reservas = Reservas.menu_reservas(reservas, clientes, habitaciones)
             case 4:
@@ -74,15 +79,17 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
             case 0:
                 menu_activo = False
                 salir_del_programa = True
- 
+
     return salir_del_programa
- 
+
+
 def menu_principal_empleados(clientes, habitaciones, reservas):
-    """Función para mostrar el menú principal para empleados. Permite gestionar clientes, habitaciones, reservas, matrices y estadísticas del hotel."""
+    """Función para mostrar el menú principal para empleados. Permite gestionar clientes, habitaciones, reservas,
+    matrices y estadísticas del hotel. Devuelve True si el usuario eligió cerrar el programa."""
 
     menu_activo = True
     salir_del_programa = False
-    
+
     while menu_activo == True:
         titulo = " Menú Principal (EMPLEADO) "
         print(f"\n{titulo:-^50}")
@@ -95,14 +102,14 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
         print("[6] Cerrar sesión (Volver al login)")
         print("[0] Cerrar el programa definitivamente")
         print("-" * 50)
- 
+
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
- 
+
         match opcion:
             case 1:
-                clientes = Clientes.menu_clientes(clientes)
+                clientes = Clientes.menu_clientes(clientes, reservas, habitaciones)
             case 2:
-                habitaciones = Habitaciones.menu_habitaciones(habitaciones)
+                habitaciones = Habitaciones.menu_habitaciones(habitaciones, reservas, clientes)
             case 3:
                 reservas = Reservas.menu_reservas(reservas, clientes, habitaciones)
             case 4:
@@ -115,33 +122,36 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
             case 0:
                 menu_activo = False
                 salir_del_programa = True
-                
+
     return salir_del_programa
- 
+
+
 if __name__ == "__main__":
 
-    #Datos hardcodeados
+    # Datos hardcodeados
     empleados_dict = {
         101: {"nombre": "Fran Cino", "sueldo": 550000},
         102: {"nombre": "Benicio Beaudean", "sueldo": 670000}
     }
-    
+
     clientes = [
         [1, 'Juan', 'Pérez', 32145678],
         [2, 'Ana', 'López', 25412587],
         [3, 'Carlos', 'Gómez', 40123654],
         [4, 'María', 'Fernández', 35147852],
         [5, 'Lucía', 'Martínez', 38741256],
+        [6, 'Sofía', 'Ramírez', 41258963],
     ]
- 
+
     habitaciones = [
         [1, 101, 'Simple', 1, 'Disponible'],
         [2, 102, 'Simple', 1, 'Ocupada'],
         [3, 201, 'Doble', 2, 'Disponible'],
         [4, 202, 'Doble', 2, 'Mantenimiento'],
         [5, 301, 'Suite', 4, 'Disponible'],
+        [6, 302, 'Suite', 6, 'Disponible'],
     ]
- 
+
     reservas = [
         [1, 1, 3, '01/09/2026', '15/09/2026'],
         [2, 2, 1, '28/08/2026', '02/09/2026'],
@@ -154,17 +164,16 @@ if __name__ == "__main__":
     sesion_activa = True
     while sesion_activa == True:
         acceso, rol = login()
-        
+
         if acceso == True:
             salir = False
             if rol == "ADMIN":
                 salir = menu_principal_admin(clientes, habitaciones, reservas, empleados_dict)
             elif rol == "EMPLEADO":
-                salir = menu_principal_empleados(clientes, habitaciones, reservas)    
+                salir = menu_principal_empleados(clientes, habitaciones, reservas)
             if salir == True:
-                sesion_activa = False 
+                sesion_activa = False
         else:
-            sesion_activa = False 
+            sesion_activa = False
 
-            
     print("\nSaliendo del programa, ¡Hasta luego!")

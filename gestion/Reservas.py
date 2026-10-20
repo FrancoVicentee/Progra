@@ -1,56 +1,97 @@
 from utilidades import val_datos
- 
 
- 
+
+def obtener_reservas_por_cliente(reservas_lista, id_cliente):
+    """Devuelve una lista con todas las reservas asociadas al cliente indicado, usando filter y lambda."""
+
+    return list(filter(lambda reserva: reserva[1] == id_cliente, reservas_lista))
+
+
+def obtener_reservas_por_habitacion(reservas_lista, id_habitacion):
+    """Devuelve una lista con todas las reservas asociadas a la habitacion indicada, usando filter y lambda."""
+
+    return list(filter(lambda reserva: reserva[2] == id_habitacion, reservas_lista))
+
+
+def mostrar_reservas_detalladas(reservas_a_mostrar, clientes_lista, habitaciones_lista):
+    """
+    Imprime en formato de tabla las reservas recibidas, reemplazando los IDs de cliente y habitacion
+    por el nombre del cliente y el numero/tipo de la habitacion. Tambien muestra las noches de cada reserva.
+    """
+
+    print(f"{'ID':<5}{'Cliente':<22}{'Hab.':<6}{'Tipo':<8}{'Ingreso':<12}{'Egreso':<12}{'Noches':<6}")
+    print("-" * 71)
+
+    for reserva in reservas_a_mostrar:
+        cliente = val_datos.buscar_por_id(clientes_lista, reserva[1])
+        habitacion = val_datos.buscar_por_id(habitaciones_lista, reserva[2])
+
+        nombre_cliente = "(sin datos)"
+        if len(cliente) > 0:
+            nombre_cliente = f"{cliente[1]} {cliente[2]}"
+
+        numero_hab = "-"
+        tipo_hab = "-"
+        if len(habitacion) > 0:
+            numero_hab = habitacion[1]
+            tipo_hab = habitacion[2]
+
+        noches = val_datos.calcular_noches(reserva[3], reserva[4])
+
+        # Se recorta el nombre con slicing para no romper la alineacion de la tabla.
+        print(f"{reserva[0]:<5}{nombre_cliente[:21]:<22}{numero_hab:<6}{tipo_hab:<8}"
+              f"{reserva[3]:<12}{reserva[4]:<12}{noches:<6}")
+
+
 def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
- 
-    print("\n--- Alta de reserva ---")
- 
+    """
+    Registra una nueva reserva. Valida que el cliente y la habitacion existan y que las fechas
+    no se superpongan con otra reserva del mismo cliente o de la misma habitacion.
+    """
+
+    val_datos.imprimir_titulo("Alta de reserva")
+
     if len(clientes_lista) == 0 or len(habitaciones_lista) == 0:
-        print("Debe existir al menos un cliente y una habitación registrados para crear una reserva.")
+        val_datos.imprimir_error("Debe existir al menos un cliente y una habitación registrados para crear una reserva.")
         return reservas_lista
- 
-    # FIX: Buscar el ID máximo real para evitar duplicados si la lista fue alterada por un ordenamiento
-    if len(reservas_lista) > 0:
-        ids = list(map(lambda reserva: reserva[0], reservas_lista))
-        nuevo_id = max(ids) + 1
-    else:
-        nuevo_id = 1
- 
+
     id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
     while val_datos.existe_id(clientes_lista, id_cliente) == False:
-        print("No existe un cliente con ese ID.")
+        val_datos.imprimir_error("No existe un cliente con ese ID.")
         id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
- 
+
     id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
     while val_datos.existe_id(habitaciones_lista, id_hab) == False:
-        print("No existe una habitación con ese ID.")
+        val_datos.imprimir_error("No existe una habitación con ese ID.")
         id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
- 
+
     fecha_ingreso, fecha_egreso = pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, -1)
- 
+
+    # Se busca el ID maximo real para evitar duplicados si la lista fue alterada por un ordenamiento.
+    nuevo_id = val_datos.generar_id(reservas_lista)
     reservas_lista.append([nuevo_id, id_cliente, id_hab, fecha_ingreso, fecha_egreso])
-    print("Reserva agregada correctamente.")
+    val_datos.imprimir_exito(f"Reserva agregada correctamente con ID {nuevo_id}.")
     return reservas_lista
- 
- 
-def listar_reservas(reservas_lista):
-    titulo = " Listado de reservas "
-    print(f"\n{titulo:-^50}")
+
+
+def listar_reservas(reservas_lista, clientes_lista, habitaciones_lista):
+    """Imprime todas las reservas registradas con los datos del cliente y de la habitacion asociados."""
+
+    val_datos.imprimir_titulo("Listado de reservas")
     if len(reservas_lista) == 0:
         print("No hay reservas registradas.")
     else:
-        print(f"{'ID':<5}{'Id_cliente':<13}{'Id_hab':<10}{'Ingreso':<15}{'Egreso':<15}")
-        for reserva in reservas_lista:
-            print(
-                f"{reserva[0]:<5}{reserva[1]:<13}{reserva[2]:<10}"
-                f"{reserva[3]:<15}{reserva[4]:<15}"
-            )
+        mostrar_reservas_detalladas(reservas_lista, clientes_lista, habitaciones_lista)
+        print(f"\nCantidad total de reservas: {len(reservas_lista)}")
     return reservas_lista
- 
- 
+
+
 def buscar_reserva_por_id(reservas_lista, id_reserva):
- 
+    """
+    Busca una reserva por su ID. Devuelve una tupla (encontrado, reserva):
+    encontrado es True/False y reserva es la fila encontrada (o una lista vacia).
+    """
+
     encontrado = False
     reserva_encontrada = []
     for reserva in reservas_lista:
@@ -58,8 +99,8 @@ def buscar_reserva_por_id(reservas_lista, id_reserva):
             encontrado = True
             reserva_encontrada = reserva
     return encontrado, reserva_encontrada
- 
- 
+
+
 def existe_solapamiento(reservas_lista, indice_columna, id_valor, fecha_ingreso, fecha_egreso, id_reserva_excluida):
     """
     Se fija si las fechas nuevas se cruzan con una reserva que ya existe.
@@ -70,164 +111,166 @@ def existe_solapamiento(reservas_lista, indice_columna, id_valor, fecha_ingreso,
 
     ingreso_nuevo = val_datos.convertir_fecha_a_numero(fecha_ingreso)
     egreso_nuevo = val_datos.convertir_fecha_a_numero(fecha_egreso)
- 
+
     hay_solapamiento = False
- 
+
     for reserva in reservas_lista:
         if reserva[indice_columna] == id_valor and reserva[0] != id_reserva_excluida:
             ingreso_existente = val_datos.convertir_fecha_a_numero(reserva[3])
             egreso_existente = val_datos.convertir_fecha_a_numero(reserva[4])
             if ingreso_nuevo < egreso_existente and ingreso_existente < egreso_nuevo:
                 hay_solapamiento = True
- 
+
     return hay_solapamiento
- 
- 
+
+
 def pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, id_reserva_excluida):
     """
     Pide la fecha de ingreso y egreso y no deja seguir hasta que sean
     validas, osea que el egreso sea despues del ingreso y que no se pisen
     con otra reserva del mismo cliente o la misma habitacion.
+    Devuelve una tupla (fecha_ingreso, fecha_egreso).
     """
- 
+
     fechas_validas = False
     fecha_ingreso = ""
     fecha_egreso = ""
- 
+
     while fechas_validas == False:
         fecha_ingreso = val_datos.pedir_fecha_valida("Ingrese la fecha de ingreso (dd/mm/aaaa): ")
         fecha_egreso = val_datos.pedir_fecha_valida("Ingrese la fecha de egreso (dd/mm/aaaa): ")
- 
+
         if val_datos.comparar_fechas(fecha_egreso, fecha_ingreso) != 1:
-            print("Error. La fecha de egreso debe ser posterior a la fecha de ingreso.")
+            val_datos.imprimir_error("Error. La fecha de egreso debe ser posterior a la fecha de ingreso.")
         elif existe_solapamiento(reservas_lista, 1, id_cliente, fecha_ingreso, fecha_egreso, id_reserva_excluida):
-            print("Error. El cliente ya tiene una reserva registrada que se superpone con esas fechas.")
+            val_datos.imprimir_error("Error. El cliente ya tiene una reserva registrada que se superpone con esas fechas.")
         elif existe_solapamiento(reservas_lista, 2, id_hab, fecha_ingreso, fecha_egreso, id_reserva_excluida):
-            print("Error. La habitación ya tiene una reserva registrada que se superpone con esas fechas.")
+            val_datos.imprimir_error("Error. La habitación ya tiene una reserva registrada que se superpone con esas fechas.")
         else:
             fechas_validas = True
- 
-    return [fecha_ingreso, fecha_egreso]
- 
- 
-def baja_reserva(reservas_lista):
- 
-    print("\n--- Baja de reserva ---")
+
+    return fecha_ingreso, fecha_egreso
+
+
+def baja_reserva(reservas_lista, clientes_lista, habitaciones_lista):
+    """Muestra las reservas, pide el ID de la que se quiere eliminar y la elimina previa confirmacion."""
+
+    val_datos.imprimir_titulo("Baja de reserva")
     if len(reservas_lista) == 0:
         print("No hay reservas registradas.")
         return reservas_lista
- 
-    listar_reservas(reservas_lista)
-    id_reserva = val_datos.pedir_entero_rango("Ingrese el ID de la reserva: ", 1, 1000)
+
+    mostrar_reservas_detalladas(reservas_lista, clientes_lista, habitaciones_lista)
+    id_reserva = val_datos.pedir_entero_rango("\nIngrese el ID de la reserva: ", 1, 1000)
     encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_reserva)
- 
-    if encontrado:
-        reservas_lista.remove(reserva)
-        print("Reserva eliminada correctamente.")
-    else:
-        print("No existe una reserva con ese ID.")
-    return reservas_lista
- 
- 
-def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
 
-    print("\n--- Modificación de reserva ---")
+    if encontrado:
+        if val_datos.pedir_confirmacion(f"¿Confirma la baja de la reserva {id_reserva}?"):
+            reservas_lista.remove(reserva)
+            val_datos.imprimir_exito("Reserva eliminada correctamente.")
+        else:
+            print("Operación cancelada.")
+    else:
+        val_datos.imprimir_error("No existe una reserva con ese ID.")
+    return reservas_lista
+
+
+def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
+    """
+    Permite modificar cliente, habitacion y fechas de una reserva. Los campos que se dejan vacios
+    no se modifican. Los cambios solo se guardan si las nuevas fechas son validas y no se superponen.
+    """
+
+    val_datos.imprimir_titulo("Modificación de reserva")
     if len(reservas_lista) == 0:
         print("No hay reservas registradas.")
         return reservas_lista
 
-    listar_reservas(reservas_lista)
+    mostrar_reservas_detalladas(reservas_lista, clientes_lista, habitaciones_lista)
 
-    id_reserva = val_datos.pedir_entero_rango("Ingrese el ID de la reserva: ", 1, 1000)
+    id_reserva = val_datos.pedir_entero_rango("\nIngrese el ID de la reserva: ", 1, 1000)
     encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_reserva)
 
     if encontrado:
         print("Deje vacío el campo si no desea modificarlo.")
 
         id_cliente_nuevo = reserva[1]
-        entrada_cliente = input(f"ID de cliente ({reserva[1]}): ")
+        entrada_cliente = input(f"ID de cliente ({reserva[1]}): ").strip()
         if entrada_cliente != "":
             while val_datos.es_entero(entrada_cliente) == False or val_datos.existe_id(clientes_lista, int(entrada_cliente)) == False:
-                print("Error. Debe ingresar un ID de cliente existente.")
-                entrada_cliente = input(f"ID de cliente ({reserva[1]}): ")
+                val_datos.imprimir_error("Error. Debe ingresar un ID de cliente existente.")
+                entrada_cliente = input(f"ID de cliente ({reserva[1]}): ").strip()
             id_cliente_nuevo = int(entrada_cliente)
 
         id_hab_nuevo = reserva[2]
-        entrada_hab = input(f"ID de habitación ({reserva[2]}): ")
+        entrada_hab = input(f"ID de habitación ({reserva[2]}): ").strip()
         if entrada_hab != "":
             while val_datos.es_entero(entrada_hab) == False or val_datos.existe_id(habitaciones_lista, int(entrada_hab)) == False:
-                print("Error. Debe ingresar un ID de habitación existente.")
-                entrada_hab = input(f"ID de habitación ({reserva[2]}): ")
+                val_datos.imprimir_error("Error. Debe ingresar un ID de habitación existente.")
+                entrada_hab = input(f"ID de habitación ({reserva[2]}): ").strip()
             id_hab_nuevo = int(entrada_hab)
 
         fecha_ingreso_nueva = reserva[3]
-        entrada_ingreso = input(f"Fecha de ingreso ({reserva[3]}): ")
+        entrada_ingreso = input(f"Fecha de ingreso ({reserva[3]}): ").strip()
         if entrada_ingreso != "":
             while val_datos.validar_fecha(entrada_ingreso) == False:
-                print("Error. Formato de fecha inválido. Use dd/mm/aaaa.")
-                entrada_ingreso = input(f"Fecha de ingreso ({reserva[3]}): ")
+                val_datos.imprimir_error("Error. Fecha inválida. Use el formato dd/mm/aaaa con una fecha existente.")
+                entrada_ingreso = input(f"Fecha de ingreso ({reserva[3]}): ").strip()
             fecha_ingreso_nueva = entrada_ingreso
 
         fecha_egreso_nueva = reserva[4]
-        entrada_egreso = input(f"Fecha de egreso ({reserva[4]}): ")
+        entrada_egreso = input(f"Fecha de egreso ({reserva[4]}): ").strip()
         if entrada_egreso != "":
             while val_datos.validar_fecha(entrada_egreso) == False:
-                print("Error. Formato de fecha inválido. Use dd/mm/aaaa.")
-                entrada_egreso = input(f"Fecha de egreso ({reserva[4]}): ")
+                val_datos.imprimir_error("Error. Fecha inválida. Use el formato dd/mm/aaaa con una fecha existente.")
+                entrada_egreso = input(f"Fecha de egreso ({reserva[4]}): ").strip()
             fecha_egreso_nueva = entrada_egreso
 
         if val_datos.comparar_fechas(fecha_egreso_nueva, fecha_ingreso_nueva) != 1:
-            print("Error. La fecha de egreso debe ser posterior al ingreso. No se modificó la reserva.")
+            val_datos.imprimir_error("Error. La fecha de egreso debe ser posterior al ingreso. No se modificó la reserva.")
         elif existe_solapamiento(reservas_lista, 1, id_cliente_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
-            print("Error. El cliente ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
+            val_datos.imprimir_error("Error. El cliente ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
         elif existe_solapamiento(reservas_lista, 2, id_hab_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
-            print("Error. La habitación ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
+            val_datos.imprimir_error("Error. La habitación ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
         else:
             reserva[1] = id_cliente_nuevo
             reserva[2] = id_hab_nuevo
             reserva[3] = fecha_ingreso_nueva
             reserva[4] = fecha_egreso_nueva
-            print("Reserva modificada correctamente.")
+            val_datos.imprimir_exito("Reserva modificada correctamente.")
     else:
-        print("No existe una reserva con ese ID.")
+        val_datos.imprimir_error("No existe una reserva con ese ID.")
     return reservas_lista
 
+
 def info_reservas(reservas_lista, clientes_lista, habitaciones_lista):
-    print("\n--- Información completa de reserva ---")
+    """Consulta una reserva por ID y muestra su informacion completa junto con los datos del cliente y la habitacion."""
+
+    val_datos.imprimir_titulo("Información completa de reserva")
     if len(reservas_lista) == 0:
         print("No hay reservas registradas.")
         return reservas_lista
 
     id_consulta = val_datos.pedir_entero_rango("Ingrese el ID de la reserva: ", 1, 1000)
-    
     encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_consulta)
 
     if encontrado == False:
-        print("No existe una reserva con ese ID.")
+        val_datos.imprimir_error("No existe una reserva con ese ID.")
     else:
-        nombre_completo = ""
-        for cliente in clientes_lista:
-            if cliente[0] == reserva[1]:
-                nombre_completo = f"{cliente[1]} {cliente[2]}"
-        
-        numero_hab = ""
-        tipo_hab = ""
-        for habitacion in habitaciones_lista:
-            if habitacion[0] == reserva[2]:
-                numero_hab = habitacion[1]
-                tipo_hab = habitacion[2]
+        cliente = val_datos.buscar_por_id(clientes_lista, reserva[1])
+        habitacion = val_datos.buscar_por_id(habitaciones_lista, reserva[2])
 
-        print(f"ID: {reserva[0]}")
-        print(f"Cliente: {nombre_completo}")
-        print(f"Habitación: {numero_hab}")
-        print(f"Tipo: {tipo_hab}")
-        print(f"Ingreso: {reserva[3]}")
-        print(f"Egreso: {reserva[4]}")
+        print(f"ID de reserva: {reserva[0]}")
+        if len(cliente) > 0:
+            print(f"Cliente:       {cliente[1]} {cliente[2]} (ID {cliente[0]} - DNI {cliente[3]})")
+        if len(habitacion) > 0:
+            print(f"Habitación:    {habitacion[1]} - {habitacion[2]} - capacidad {habitacion[3]} - {habitacion[4]}")
+        print(f"Ingreso:       {reserva[3]}")
+        print(f"Egreso:        {reserva[4]}")
+        print(f"Noches:        {val_datos.calcular_noches(reserva[3], reserva[4])}")
 
     val_datos.pausar_menu()
     return reservas_lista
-
-
 
 
 def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
@@ -242,7 +285,7 @@ def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
         print("[2] Listar reservas")
         print("[3] Baja de reserva")
         print("[4] Modificar reserva")
-        print("[5] consultar informacion por reserva")
+        print("[5] Consultar información por reserva")
         print("-" * 50)
         print("[0] Volver al menú anterior")
         print("-" * 50)
@@ -253,14 +296,14 @@ def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
             case 1:
                 reservas_lista = alta_reserva(reservas_lista, clientes_lista, habitaciones_lista)
             case 2:
-                reservas_lista = listar_reservas(reservas_lista)
-                val_datos.pausar_menu() 
+                reservas_lista = listar_reservas(reservas_lista, clientes_lista, habitaciones_lista)
+                val_datos.pausar_menu()
             case 3:
-                reservas_lista = baja_reserva(reservas_lista)
+                reservas_lista = baja_reserva(reservas_lista, clientes_lista, habitaciones_lista)
             case 4:
                 reservas_lista = modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista)
             case 5:
-                info_reservas(reservas_lista, clientes_lista, habitaciones_lista)
+                reservas_lista = info_reservas(reservas_lista, clientes_lista, habitaciones_lista)
             case 0:
                 print("Saliendo del menú de reservas...")
 

@@ -1,97 +1,117 @@
 from utilidades import val_datos
 
 
+LEGAJO_MINIMO = 100
+LEGAJO_MAXIMO = 999
+SUELDO_MINIMO = 100000
+SUELDO_MAXIMO = 10000000
+
+
+def pedir_legajo(mensaje):
+    """Pide un numero de legajo dentro del rango permitido y lo devuelve."""
+
+    return val_datos.pedir_entero_rango(f"{mensaje} ({LEGAJO_MINIMO}-{LEGAJO_MAXIMO}): ", LEGAJO_MINIMO, LEGAJO_MAXIMO)
+
+
 def alta_empleado(empleados_dict):
-    print("\n--- Alta de Empleado ---")
-    legajo = val_datos.pedir_entero_rango("Ingrese legajo (100-1000): ", 100, 1000)
-    
+    """Registra un empleado nuevo en el diccionario si el legajo ingresado no existe."""
+
+    val_datos.imprimir_titulo("Alta de empleado")
+    legajo = pedir_legajo("Ingrese legajo")
+
     if legajo not in empleados_dict:
         nombre = val_datos.pedir_nombre("Nombre del empleado: ")
-        sueldo = val_datos.pedir_entero_rango("Sueldo: $", 100000, 10000000)
+        sueldo = val_datos.pedir_entero_rango("Sueldo: $", SUELDO_MINIMO, SUELDO_MAXIMO)
         empleados_dict[legajo] = {"nombre": nombre, "sueldo": sueldo}
-        print("Empleado registrado correctamente.")
+        val_datos.imprimir_exito("Empleado registrado correctamente.")
     else:
-        print("Error. El legajo ya existe.")
-        
+        val_datos.imprimir_error("Error. El legajo ya existe.")
+
     return empleados_dict
 
 
 def listar_empleados(empleados_dict):
-    print("\n--- Listado de Empleados ---")
+    """Imprime todos los empleados registrados con formato de tabla."""
+
+    val_datos.imprimir_titulo("Listado de empleados")
     if len(empleados_dict) == 0:
         print("No hay empleados registrados.")
     else:
-        print(f"{'Legajo':<10}{'Nombre':<20}{'Sueldo':<10}")
-        print("-" * 35)
-        
-        claves = list(empleados_dict.keys())
-        indice = 0
-        while indice < len(claves):
-            leg = claves[indice]
-            datos = empleados_dict[leg]
-            print(f"{leg:<10}{datos['nombre']:<20}${datos['sueldo']:<10}")
-            indice += 1
-            
+        print(f"{'Legajo':<10}{'Nombre':<25}{'Sueldo':<12}")
+        print("-" * 47)
+
+        for legajo, datos in empleados_dict.items():
+            print(f"{legajo:<10}{datos['nombre']:<25}${datos['sueldo']:<11}")
+
+        print("-" * 47)
+        print(f"Cantidad total de empleados: {len(empleados_dict)}")
+
     val_datos.pausar_menu()
     return empleados_dict
 
 
 def baja_empleado(empleados_dict):
-    print("\n--- Baja de Empleado ---")
+    """Elimina un empleado del diccionario previa confirmacion."""
+
+    val_datos.imprimir_titulo("Baja de empleado")
     if len(empleados_dict) == 0:
         print("No hay empleados registrados para dar de baja.")
     else:
-        legajo = val_datos.pedir_entero_rango("Ingrese legajo a dar de baja (100-1000): ", 100, 1000)
-        
+        legajo = pedir_legajo("Ingrese legajo a dar de baja")
+
         if legajo in empleados_dict:
             print(f"Empleado encontrado: {empleados_dict[legajo]['nombre']}")
-            confirmacion = val_datos.pedir_entero_rango("¿Confirma la baja? [1] Sí [0] No: ", 0, 1)
-            
-            if confirmacion == 1:
+
+            if val_datos.pedir_confirmacion("¿Confirma la baja?"):
                 empleados_dict.pop(legajo)
-                print("Empleado eliminado correctamente.")
+                val_datos.imprimir_exito("Empleado eliminado correctamente.")
             else:
                 print("Operación cancelada.")
         else:
-            print("Empleado no encontrado.")
-            
+            val_datos.imprimir_error("Empleado no encontrado.")
+
     return empleados_dict
 
 
 def modificar_sueldo(empleados_dict):
-    print("\n--- Modificar Sueldo de Empleado ---")
+    """Modifica el sueldo de un empleado existente."""
+
+    val_datos.imprimir_titulo("Modificar sueldo de empleado")
     if len(empleados_dict) == 0:
         print("No hay empleados registrados para modificar.")
     else:
-        legajo = val_datos.pedir_entero_rango("Ingrese legajo a modificar (100-999): ", 100, 1000)
-        
+        legajo = pedir_legajo("Ingrese legajo a modificar")
+
         if legajo in empleados_dict:
             print(f"Empleado actual: {empleados_dict[legajo]['nombre']} - Sueldo: ${empleados_dict[legajo]['sueldo']}")
-            nuevo_sueldo = val_datos.pedir_entero_rango("Nuevo sueldo: $", 100000, 10000000)
+            nuevo_sueldo = val_datos.pedir_entero_rango("Nuevo sueldo: $", SUELDO_MINIMO, SUELDO_MAXIMO)
             empleados_dict[legajo]["sueldo"] = nuevo_sueldo
-            print("Sueldo actualizado correctamente.")
+            val_datos.imprimir_exito("Sueldo actualizado correctamente.")
         else:
-            print("Empleado no encontrado.")
-            
+            val_datos.imprimir_error("Empleado no encontrado.")
+
     return empleados_dict
 
+
 def consultar_empleado(empleados_dict):
-    print("\n--- Consultar Empleado ---")
+    """Consulta un empleado por legajo y muestra sus datos."""
+
+    val_datos.imprimir_titulo("Consultar empleado")
     if len(empleados_dict) == 0:
         print("No hay empleados registrados para consultar.")
     else:
-        legajo = val_datos.pedir_entero_rango("Ingrese legajo a consultar (100-999): ", 100, 1000)
-        
+        legajo = pedir_legajo("Ingrese legajo a consultar")
+
         if legajo in empleados_dict:
             empleado = empleados_dict[legajo]
-            print(f"Empleado encontrado: {empleado['nombre']} - Sueldo: ${empleado['sueldo']}")
+            print(f"Legajo: {legajo}")
+            print(f"Nombre: {empleado['nombre']}")
+            print(f"Sueldo: ${empleado['sueldo']}")
         else:
-            print("Empleado no encontrado.")
-            
+            val_datos.imprimir_error("Empleado no encontrado.")
+
     val_datos.pausar_menu()
     return empleados_dict
-
-
 
 
 def menu_admin(empleados_dict):
