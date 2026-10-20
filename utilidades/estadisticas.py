@@ -1,5 +1,5 @@
 import re 
-from paquete_2 import val_datos
+from utilidades import val_datos
 from functools import reduce
 
 def calcular_capacidad_total(lista_de_habitaciones):

@@ -1,4 +1,4 @@
-from paquete_2 import val_datos
+from utilidades import val_datos
  
 
  

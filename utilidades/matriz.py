@@ -1,6 +1,6 @@
 import re 
 from functools import reduce
-from paquete_2 import val_datos
+from utilidades import val_datos
 
 #ordena la lista de clientes por apellido, utilizando el tercer elemento de cada cliente como clave de ordenamiento
 

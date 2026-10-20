@@ -1,7 +1,7 @@
 # MÓDULOS
  
 from paquete_1 import Clientes, Administrador, Reservas, Habitaciones
-from paquete_2 import estadisticas, matriz, val_datos
+from utilidades import estadisticas, matriz, val_datos
 
 def login():
     """Función para manejar el inicio de sesión del usuario. 
