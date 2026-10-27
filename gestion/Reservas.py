@@ -99,17 +99,12 @@ def listar_reservas(reservas_lista, clientes_lista, habitaciones_lista):
 
 def buscar_reserva_por_id(reservas_lista, id_reserva):
     """
-    Busca una reserva por su ID. Devuelve una tupla (encontrado, reserva):
+    Busca una reserva por su ID en el archivo de reservas. Devuelve una tupla (encontrado, reserva):
     encontrado es True/False y reserva es la fila encontrada (o una lista vacia).
     """
 
-    encontrado = False
-    reserva_encontrada = []
-    for reserva in reservas_lista:
-        if reserva[0] == id_reserva:
-            encontrado = True
-            reserva_encontrada = reserva
-    return encontrado, reserva_encontrada
+    reserva = archivos.buscar_registro(RUTA_RESERVAS, id_reserva, COLUMNAS_RESERVAS)
+    return len(reserva) > 0, reserva
 
 
 def existe_solapamiento(reservas_lista, indice_columna, id_valor, fecha_ingreso, fecha_egreso, id_reserva_excluida):
@@ -164,21 +159,22 @@ def pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, id_reserva_excluida
 
 
 def baja_reserva(reservas_lista, clientes_lista, habitaciones_lista):
-    """Muestra las reservas, pide el ID de la que se quiere eliminar y la elimina previa confirmacion."""
+    """Muestra las reservas del archivo, pide el ID de la que se quiere eliminar y la elimina previa confirmacion."""
 
     val_datos.imprimir_titulo("Baja de reserva")
-    if len(reservas_lista) == 0:
+    reservas_archivo = archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)
+    if len(reservas_archivo) == 0:
         print("No hay reservas registradas.")
         return reservas_lista
 
-    mostrar_reservas_detalladas(reservas_lista, clientes_lista, habitaciones_lista)
+    mostrar_reservas_detalladas(reservas_archivo, clientes_lista, habitaciones_lista)
     id_reserva = val_datos.pedir_entero_rango("\nIngrese el ID de la reserva: ", 1, 1000)
-    encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_reserva)
+    encontrado = buscar_reserva_por_id(reservas_lista, id_reserva)[0]
 
     if encontrado:
         if val_datos.pedir_confirmacion(f"¿Confirma la baja de la reserva {id_reserva}?"):
-            reservas_lista.remove(reserva)
-            val_datos.imprimir_exito("Reserva eliminada correctamente.")
+            if archivos.reemplazar_registro(RUTA_RESERVAS, id_reserva, None, COLUMNAS_RESERVAS):
+                val_datos.imprimir_exito("Reserva eliminada correctamente.")
         else:
             print("Operación cancelada.")
     else:
@@ -188,16 +184,17 @@ def baja_reserva(reservas_lista, clientes_lista, habitaciones_lista):
 
 def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
     """
-    Permite modificar cliente, habitacion y fechas de una reserva. Los campos que se dejan vacios
+    Permite modificar cliente, habitacion y fechas de una reserva del archivo. Los campos que se dejan vacios
     no se modifican. Los cambios solo se guardan si las nuevas fechas son validas y no se superponen.
     """
 
     val_datos.imprimir_titulo("Modificación de reserva")
-    if len(reservas_lista) == 0:
+    reservas_archivo = archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)
+    if len(reservas_archivo) == 0:
         print("No hay reservas registradas.")
         return reservas_lista
 
-    mostrar_reservas_detalladas(reservas_lista, clientes_lista, habitaciones_lista)
+    mostrar_reservas_detalladas(reservas_archivo, clientes_lista, habitaciones_lista)
 
     id_reserva = val_datos.pedir_entero_rango("\nIngrese el ID de la reserva: ", 1, 1000)
     encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_reserva)
@@ -208,7 +205,8 @@ def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
         id_cliente_nuevo = reserva[1]
         entrada_cliente = input(f"ID de cliente ({reserva[1]}): ").strip()
         if entrada_cliente != "":
-            while val_datos.es_entero(entrada_cliente) == False or val_datos.existe_id(clientes_lista, int(entrada_cliente)) == False:
+            while (val_datos.es_entero(entrada_cliente) == False
+                   or len(archivos.buscar_registro(RUTA_CLIENTES, int(entrada_cliente), COLUMNAS_CLIENTES)) == 0):
                 val_datos.imprimir_error("Error. Debe ingresar un ID de cliente existente.")
                 entrada_cliente = input(f"ID de cliente ({reserva[1]}): ").strip()
             id_cliente_nuevo = int(entrada_cliente)
@@ -216,7 +214,8 @@ def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
         id_hab_nuevo = reserva[2]
         entrada_hab = input(f"ID de habitación ({reserva[2]}): ").strip()
         if entrada_hab != "":
-            while val_datos.es_entero(entrada_hab) == False or val_datos.existe_id(habitaciones_lista, int(entrada_hab)) == False:
+            while (val_datos.es_entero(entrada_hab) == False
+                   or len(archivos.buscar_registro(RUTA_HABITACIONES, int(entrada_hab), COLUMNAS_HABITACIONES)) == 0):
                 val_datos.imprimir_error("Error. Debe ingresar un ID de habitación existente.")
                 entrada_hab = input(f"ID de habitación ({reserva[2]}): ").strip()
             id_hab_nuevo = int(entrada_hab)
@@ -244,11 +243,9 @@ def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
         elif existe_solapamiento(reservas_lista, 2, id_hab_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
             val_datos.imprimir_error("Error. La habitación ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
         else:
-            reserva[1] = id_cliente_nuevo
-            reserva[2] = id_hab_nuevo
-            reserva[3] = fecha_ingreso_nueva
-            reserva[4] = fecha_egreso_nueva
-            val_datos.imprimir_exito("Reserva modificada correctamente.")
+            reserva_nueva = [id_reserva, id_cliente_nuevo, id_hab_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva]
+            if archivos.reemplazar_registro(RUTA_RESERVAS, id_reserva, reserva_nueva, COLUMNAS_RESERVAS):
+                val_datos.imprimir_exito("Reserva modificada correctamente.")
     else:
         val_datos.imprimir_error("No existe una reserva con ese ID.")
     return reservas_lista
@@ -258,7 +255,7 @@ def info_reservas(reservas_lista, clientes_lista, habitaciones_lista):
     """Consulta una reserva por ID y muestra su informacion completa junto con los datos del cliente y la habitacion."""
 
     val_datos.imprimir_titulo("Información completa de reserva")
-    if len(reservas_lista) == 0:
+    if len(archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)) == 0:
         print("No hay reservas registradas.")
         return reservas_lista
 
@@ -268,8 +265,8 @@ def info_reservas(reservas_lista, clientes_lista, habitaciones_lista):
     if encontrado == False:
         val_datos.imprimir_error("No existe una reserva con ese ID.")
     else:
-        cliente = val_datos.buscar_por_id(clientes_lista, reserva[1])
-        habitacion = val_datos.buscar_por_id(habitaciones_lista, reserva[2])
+        cliente = archivos.buscar_registro(RUTA_CLIENTES, reserva[1], COLUMNAS_CLIENTES)
+        habitacion = archivos.buscar_registro(RUTA_HABITACIONES, reserva[2], COLUMNAS_HABITACIONES)
 
         print(f"ID de reserva: {reserva[0]}")
         if len(cliente) > 0:
