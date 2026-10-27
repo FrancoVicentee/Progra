@@ -1,4 +1,12 @@
-from utilidades import val_datos
+from utilidades import val_datos, archivos
+
+
+RUTA_RESERVAS = "datos/reservas.txt"
+RUTA_CLIENTES = "datos/clientes.txt"
+RUTA_HABITACIONES = "datos/habitaciones.txt"
+COLUMNAS_RESERVAS = [0, 1, 2]
+COLUMNAS_CLIENTES = [0, 3]
+COLUMNAS_HABITACIONES = [0, 1, 3]
 
 
 def obtener_reservas_por_cliente(reservas_lista, id_cliente):
@@ -45,44 +53,47 @@ def mostrar_reservas_detalladas(reservas_a_mostrar, clientes_lista, habitaciones
 
 def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
     """
-    Registra una nueva reserva. Valida que el cliente y la habitacion existan y que las fechas
-    no se superpongan con otra reserva del mismo cliente o de la misma habitacion.
+    Registra una nueva reserva en el archivo de reservas. Valida que el cliente y la habitacion
+    existan en sus archivos y que las fechas no se superpongan con otra reserva del mismo cliente
+    o de la misma habitacion. El ID nuevo se calcula leyendo el archivo.
     """
 
     val_datos.imprimir_titulo("Alta de reserva")
 
-    if len(clientes_lista) == 0 or len(habitaciones_lista) == 0:
+    hay_clientes = len(archivos.cargar_matriz(RUTA_CLIENTES, COLUMNAS_CLIENTES)) > 0
+    hay_habitaciones = len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) > 0
+    if hay_clientes == False or hay_habitaciones == False:
         val_datos.imprimir_error("Debe existir al menos un cliente y una habitación registrados para crear una reserva.")
         return reservas_lista
 
     id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
-    while val_datos.existe_id(clientes_lista, id_cliente) == False:
+    while len(archivos.buscar_registro(RUTA_CLIENTES, id_cliente, COLUMNAS_CLIENTES)) == 0:
         val_datos.imprimir_error("No existe un cliente con ese ID.")
         id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
 
     id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
-    while val_datos.existe_id(habitaciones_lista, id_hab) == False:
+    while len(archivos.buscar_registro(RUTA_HABITACIONES, id_hab, COLUMNAS_HABITACIONES)) == 0:
         val_datos.imprimir_error("No existe una habitación con ese ID.")
         id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
 
     fecha_ingreso, fecha_egreso = pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, -1)
 
-    # Se busca el ID maximo real para evitar duplicados si la lista fue alterada por un ordenamiento.
-    nuevo_id = val_datos.generar_id(reservas_lista)
-    reservas_lista.append([nuevo_id, id_cliente, id_hab, fecha_ingreso, fecha_egreso])
-    val_datos.imprimir_exito(f"Reserva agregada correctamente con ID {nuevo_id}.")
+    nuevo_id = archivos.obtener_proximo_id(RUTA_RESERVAS, COLUMNAS_RESERVAS)
+    if archivos.agregar_registro(RUTA_RESERVAS, [nuevo_id, id_cliente, id_hab, fecha_ingreso, fecha_egreso]):
+        val_datos.imprimir_exito(f"Reserva agregada correctamente con ID {nuevo_id}.")
     return reservas_lista
 
 
 def listar_reservas(reservas_lista, clientes_lista, habitaciones_lista):
-    """Imprime todas las reservas registradas con los datos del cliente y de la habitacion asociados."""
+    """Imprime todas las reservas registradas, leyendolas del archivo, con los datos del cliente y de la habitacion."""
 
     val_datos.imprimir_titulo("Listado de reservas")
-    if len(reservas_lista) == 0:
+    reservas_archivo = archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)
+    if len(reservas_archivo) == 0:
         print("No hay reservas registradas.")
     else:
-        mostrar_reservas_detalladas(reservas_lista, clientes_lista, habitaciones_lista)
-        print(f"\nCantidad total de reservas: {len(reservas_lista)}")
+        mostrar_reservas_detalladas(reservas_archivo, clientes_lista, habitaciones_lista)
+        print(f"\nCantidad total de reservas: {len(reservas_archivo)}")
     return reservas_lista
 
 
