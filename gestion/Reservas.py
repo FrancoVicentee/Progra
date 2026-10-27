@@ -10,9 +10,13 @@ COLUMNAS_HABITACIONES = [0, 1, 3]
 
 
 def obtener_reservas_por_cliente(reservas_lista, id_cliente):
-    """Devuelve una lista con todas las reservas asociadas al cliente indicado, usando filter y lambda."""
+    """
+    Devuelve una lista con todas las reservas del archivo asociadas al cliente indicado, usando filter y lambda.
+    El parametro reservas_lista se mantiene para no romper las llamadas de Clientes.py, pero ya no se usa.
+    """
 
-    return list(filter(lambda reserva: reserva[1] == id_cliente, reservas_lista))
+    reservas_archivo = archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)
+    return list(filter(lambda reserva: reserva[1] == id_cliente, reservas_archivo))
 
 
 def obtener_reservas_por_habitacion(reservas_lista, id_habitacion):
@@ -31,8 +35,8 @@ def mostrar_reservas_detalladas(reservas_a_mostrar, clientes_lista, habitaciones
     print("-" * 71)
 
     for reserva in reservas_a_mostrar:
-        cliente = val_datos.buscar_por_id(clientes_lista, reserva[1])
-        habitacion = val_datos.buscar_por_id(habitaciones_lista, reserva[2])
+        cliente = archivos.buscar_registro(RUTA_CLIENTES, reserva[1], COLUMNAS_CLIENTES)
+        habitacion = archivos.buscar_registro(RUTA_HABITACIONES, reserva[2], COLUMNAS_HABITACIONES)
 
         nombre_cliente = "(sin datos)"
         if len(cliente) > 0:
@@ -76,7 +80,7 @@ def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
         val_datos.imprimir_error("No existe una habitación con ese ID.")
         id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
 
-    fecha_ingreso, fecha_egreso = pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, -1)
+    fecha_ingreso, fecha_egreso = pedir_fechas_reserva(id_cliente, id_hab, -1)
 
     nuevo_id = archivos.obtener_proximo_id(RUTA_RESERVAS, COLUMNAS_RESERVAS)
     if archivos.agregar_registro(RUTA_RESERVAS, [nuevo_id, id_cliente, id_hab, fecha_ingreso, fecha_egreso]):
@@ -107,11 +111,12 @@ def buscar_reserva_por_id(reservas_lista, id_reserva):
     return len(reserva) > 0, reserva
 
 
-def existe_solapamiento(reservas_lista, indice_columna, id_valor, fecha_ingreso, fecha_egreso, id_reserva_excluida):
+def existe_solapamiento(indice_columna, id_valor, fecha_ingreso, fecha_egreso, id_reserva_excluida, ruta=RUTA_RESERVAS):
     """
-    Se fija si las fechas nuevas se cruzan con una reserva que ya existe.
-    Sirve tanto para chequear el cliente como la habitacion, dependiendo
-    que columna se le pase (1 para cliente, 2 para habitacion).
+    Se fija si las fechas nuevas se cruzan con una reserva que ya existe en el archivo de reservas.
+    Lee el archivo de a una linea. Sirve tanto para chequear el cliente como la habitacion, dependiendo
+    que columna se le pase (1 para cliente, 2 para habitacion). La reserva con id_reserva_excluida no se
+    cuenta, asi al modificar una reserva no choca consigo misma. Si el archivo no existe, no hay solapamiento.
     Devuelve True si se superponen las fechas, False si no.
     """
 
@@ -120,21 +125,36 @@ def existe_solapamiento(reservas_lista, indice_columna, id_valor, fecha_ingreso,
 
     hay_solapamiento = False
 
-    for reserva in reservas_lista:
-        if reserva[indice_columna] == id_valor and reserva[0] != id_reserva_excluida:
-            ingreso_existente = val_datos.convertir_fecha_a_numero(reserva[3])
-            egreso_existente = val_datos.convertir_fecha_a_numero(reserva[4])
-            if ingreso_nuevo < egreso_existente and ingreso_existente < egreso_nuevo:
-                hay_solapamiento = True
+    try:
+        arch = open(ruta, "rt", encoding="UTF-8")
+        linea = arch.readline()
+        while linea != "" and hay_solapamiento == False:
+            reserva = archivos.leer_registro_de_linea(linea, COLUMNAS_RESERVAS)
+            if len(reserva) == 5 and reserva[indice_columna] == id_valor and reserva[0] != id_reserva_excluida:
+                ingreso_existente = val_datos.convertir_fecha_a_numero(reserva[3])
+                egreso_existente = val_datos.convertir_fecha_a_numero(reserva[4])
+                if ingreso_nuevo < egreso_existente and ingreso_existente < egreso_nuevo:
+                    hay_solapamiento = True
+            linea = arch.readline()
+    except FileNotFoundError:
+        # Si el archivo todavia no existe, no hay reservas con las que chocar.
+        pass
+    except OSError as error:
+        val_datos.imprimir_error(f"No se pudo leer el archivo {ruta}: {error}")
+    finally:
+        try:
+            arch.close()
+        except NameError:
+            pass
 
     return hay_solapamiento
 
 
-def pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, id_reserva_excluida):
+def pedir_fechas_reserva(id_cliente, id_hab, id_reserva_excluida):
     """
     Pide la fecha de ingreso y egreso y no deja seguir hasta que sean
     validas, osea que el egreso sea despues del ingreso y que no se pisen
-    con otra reserva del mismo cliente o la misma habitacion.
+    con otra reserva del archivo del mismo cliente o la misma habitacion.
     Devuelve una tupla (fecha_ingreso, fecha_egreso).
     """
 
@@ -148,9 +168,9 @@ def pedir_fechas_reserva(reservas_lista, id_cliente, id_hab, id_reserva_excluida
 
         if val_datos.comparar_fechas(fecha_egreso, fecha_ingreso) != 1:
             val_datos.imprimir_error("Error. La fecha de egreso debe ser posterior a la fecha de ingreso.")
-        elif existe_solapamiento(reservas_lista, 1, id_cliente, fecha_ingreso, fecha_egreso, id_reserva_excluida):
+        elif existe_solapamiento(1, id_cliente, fecha_ingreso, fecha_egreso, id_reserva_excluida):
             val_datos.imprimir_error("Error. El cliente ya tiene una reserva registrada que se superpone con esas fechas.")
-        elif existe_solapamiento(reservas_lista, 2, id_hab, fecha_ingreso, fecha_egreso, id_reserva_excluida):
+        elif existe_solapamiento(2, id_hab, fecha_ingreso, fecha_egreso, id_reserva_excluida):
             val_datos.imprimir_error("Error. La habitación ya tiene una reserva registrada que se superpone con esas fechas.")
         else:
             fechas_validas = True
@@ -238,9 +258,9 @@ def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
 
         if val_datos.comparar_fechas(fecha_egreso_nueva, fecha_ingreso_nueva) != 1:
             val_datos.imprimir_error("Error. La fecha de egreso debe ser posterior al ingreso. No se modificó la reserva.")
-        elif existe_solapamiento(reservas_lista, 1, id_cliente_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
+        elif existe_solapamiento(1, id_cliente_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
             val_datos.imprimir_error("Error. El cliente ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
-        elif existe_solapamiento(reservas_lista, 2, id_hab_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
+        elif existe_solapamiento(2, id_hab_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva, id_reserva):
             val_datos.imprimir_error("Error. La habitación ya tiene una reserva que se superpone con esas fechas. No se modificó la reserva.")
         else:
             reserva_nueva = [id_reserva, id_cliente_nuevo, id_hab_nuevo, fecha_ingreso_nueva, fecha_egreso_nueva]
