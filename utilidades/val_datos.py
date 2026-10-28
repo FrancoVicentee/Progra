@@ -1,11 +1,6 @@
 import re
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Constantes del sistema (tuplas inmutables y patrones de expresiones regulares).
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 TIPOS_HABITACION = ("Simple", "Doble", "Suite")
 ESTADOS_HABITACION = ("Disponible", "Ocupada", "Mantenimiento")
@@ -33,11 +28,6 @@ PATRON_TEXTO = r"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+( [A-Za-zÁÉÍÓÚÜÑá
 PATRON_FECHA = r"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4})$"
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Validaciones numericas.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def es_entero(cadena):
@@ -77,11 +67,7 @@ def pedir_confirmacion(mensaje):
     return respuesta == 1
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Validaciones y operaciones con fechas.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def es_bisiesto(anio):
@@ -102,7 +88,6 @@ def validar_fecha(fecha):
     """
     Valida una fecha en formato dd/mm/aaaa usando una expresion regular con grupos.
     Ademas del formato, controla que el dia exista en ese mes
-    (por ejemplo, rechaza 31/04 o 29/02 en años no bisiestos).
     """
 
     coincidencia = re.match(PATRON_FECHA, fecha.strip())
@@ -183,11 +168,7 @@ def calcular_noches(fecha_ingreso, fecha_egreso):
     return fecha_a_dias(fecha_egreso) - fecha_a_dias(fecha_ingreso)
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Funciones genericas sobre matrices (listas de listas cuyo primer elemento es el ID).
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def generar_id(lista):
@@ -209,9 +190,6 @@ def existe_id(lista, id_valor):
 def buscar_por_id(lista, id_valor, indice=0):
     """
     Devuelve el registro de la matriz con el ID indicado, o una lista vacia si no existe.
-    Caso base 1: indice >= len(lista), se recorrio todo y no esta: devuelve [].
-    Caso base 2: lista[indice][0] == id_valor: lo encontro y lo devuelve.
-    Caso recursivo: busca de nuevo desde indice + 1. El dominio se reduce en un elemento por llamada.
     """
 
     if indice >= len(lista):
@@ -240,11 +218,7 @@ def pausar_menu():
     pedir_entero_rango("\nPresione 0 para volver: ", 0, 0)
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Validaciones de texto (nombres, apellidos y DNI).
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def normalizar_espacios(texto):
@@ -293,11 +267,6 @@ def pedir_dni(mensaje):
     return pedir_entero_rango(mensaje, DNI_MINIMO, DNI_MAXIMO)
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Validaciones de habitaciones (tipo y estado).
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def normalizar_capitalizado(texto):
@@ -338,11 +307,6 @@ def pedir_estado_habitacion(mensaje):
     return normalizar_capitalizado(estado)
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Funciones para imprimir mensajes en color (éxito / error) y titulos.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 COLOR_ROJO = "\033[91m"
 COLOR_VERDE = "\033[92m"

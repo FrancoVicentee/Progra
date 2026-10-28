@@ -70,11 +70,6 @@ def imprimir_tabla_categorias(titulo_columna, conteo, total):
     print(f"{'Total':<16}{total:>10}{calcular_porcentaje(total, total):>13.1f}%")
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Estadisticas de habitaciones.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def calcular_capacidad_total(habitaciones_lista):
@@ -151,11 +146,7 @@ def habitacion_capacidad_max_min(habitaciones_lista):
     val_datos.pausar_menu()
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Estadisticas de reservas y clientes.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def estadisticas_reservas(reservas_lista, habitaciones_lista):

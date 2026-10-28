@@ -2,12 +2,6 @@ import os
 from utilidades import val_datos
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Constantes de archivos.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
 # Caracter que separa los campos de cada linea del archivo.
 SEPARADOR = ";"
 
@@ -15,18 +9,10 @@ SEPARADOR = ";"
 RUTA_TEMPORAL = "datos/temp.txt"
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Conversion entre lineas del archivo y registros.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
 
 def linea_a_registro(linea, columnas_enteras):
     """
-    Pasa una linea del archivo a una lista. Por ejemplo, '1;Juan;Pérez;32145678' queda como
-    [1, 'Juan', 'Pérez', 32145678]. Las posiciones que vienen en columnas_enteras se pasan a int
-    (si alguna no es un numero, salta un ValueError).
+    Pasa una linea del archivo a una lista.
     """
 
     datos = linea.strip().split(SEPARADOR)
@@ -57,11 +43,7 @@ def leer_registro_de_linea(linea, columnas_enteras):
     return registro
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Busquedas en el archivo (se lee de a una linea, sin cargarlo entero en memoria).
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def buscar_registro(ruta, id_buscado, columnas_enteras):
@@ -72,7 +54,7 @@ def buscar_registro(ruta, id_buscado, columnas_enteras):
 
     registro_encontrado = []
     try:
-        arch = open(ruta, "rt", encoding="UTF-8")
+        arch = open(ruta, "r", encoding="UTF-8")
         linea = arch.readline()
         while linea != "" and len(registro_encontrado) == 0:
             registro = leer_registro_de_linea(linea, columnas_enteras)
@@ -94,13 +76,13 @@ def buscar_registro(ruta, id_buscado, columnas_enteras):
 
 def existe_valor(ruta, columna, valor, id_excluido, columnas_enteras):
     """
-    Se fija si algun registro del archivo ya tiene ese valor en esa columna (por ejemplo, para no repetir
-    un DNI). El registro con id_excluido no se cuenta, asi al modificar un cliente no choca consigo mismo.
+    Se fija si algun registro del archivo ya tiene ese valor en esa columna. 
+    El registro con id_excluido no se cuenta, asi al modificar un cliente no choca consigo mismo.
     """
 
     encontrado = False
     try:
-        arch = open(ruta, "rt", encoding="UTF-8")
+        arch = open(ruta, "r", encoding="UTF-8")
         linea = arch.readline()
         while linea != "" and encontrado == False:
             registro = leer_registro_de_linea(linea, columnas_enteras)
@@ -129,7 +111,7 @@ def obtener_proximo_id(ruta, columnas_enteras):
 
     mayor_id = 0
     try:
-        arch = open(ruta, "rt", encoding="UTF-8")
+        arch = open(ruta, "r", encoding="UTF-8")
         linea = arch.readline()
         while linea != "":
             registro = leer_registro_de_linea(linea, columnas_enteras)
@@ -150,11 +132,6 @@ def obtener_proximo_id(ruta, columnas_enteras):
     return mayor_id + 1
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Alta, baja y modificacion sobre el archivo.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def agregar_registro(ruta, registro):
@@ -165,7 +142,7 @@ def agregar_registro(ruta, registro):
 
     grabado = False
     try:
-        arch = open(ruta, "at", encoding="UTF-8")
+        arch = open(ruta, "a", encoding="UTF-8")
         arch.write(registro_a_linea(registro))
         grabado = True
     except OSError as error:
@@ -182,8 +159,7 @@ def agregar_registro(ruta, registro):
 def reemplazar_registro(ruta, id_buscado, registro_nuevo, columnas_enteras):
     """
     Sirve para la baja y para la modificacion. Copiamos el archivo linea por linea a uno temporal y,
-    cuando aparece el ID buscado, no lo copiamos (baja, registro_nuevo en None) o escribimos el registro
-    nuevo en su lugar (modificacion). Al final borramos el original y renombramos el temporal.
+    cuando aparece el ID buscado. Al final borramos el original y renombramos el temporal.
     Devuelve True si encontro el ID y pudo guardar los cambios.
     """
 
@@ -191,8 +167,8 @@ def reemplazar_registro(ruta, id_buscado, registro_nuevo, columnas_enteras):
     copia_completa = False
 
     try:
-        arch = open(ruta, "rt", encoding="UTF-8")
-        aux = open(RUTA_TEMPORAL, "wt", encoding="UTF-8")
+        arch = open(ruta, "r", encoding="UTF-8")
+        aux = open(RUTA_TEMPORAL, "w", encoding="UTF-8")
 
         linea = arch.readline()
         while linea != "":
@@ -235,11 +211,7 @@ def reemplazar_registro(ruta, id_buscado, registro_nuevo, columnas_enteras):
     return actualizado
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Carga completa del archivo.
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 def cargar_matriz(ruta, columnas_enteras):
@@ -250,7 +222,7 @@ def cargar_matriz(ruta, columnas_enteras):
 
     matriz = []
     try:
-        arch = open(ruta, "rt", encoding="UTF-8")
+        arch = open(ruta, "r", encoding="UTF-8")
         linea = arch.readline()
         while linea != "":
             registro = leer_registro_de_linea(linea, columnas_enteras)
