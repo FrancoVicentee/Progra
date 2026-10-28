@@ -181,8 +181,8 @@ def consultar_cliente(clientes_lista, reservas_lista, habitaciones_lista):
             print("El cliente no tiene reservas registradas.")
         else:
             Reservas.mostrar_reservas_detalladas(reservas_del_cliente, clientes_lista, habitaciones_lista)
-            noches = [val_datos.calcular_noches(reserva[3], reserva[4]) for reserva in reservas_del_cliente]
-            print(f"\nTotal de reservas: {len(reservas_del_cliente)} | Total de noches: {sum(noches)}")
+
+            print(f"\nTotal de reservas: {len(reservas_del_cliente)} | Total de noches: {val_datos.total_noches(reservas_del_cliente)}")
 
     val_datos.pausar_menu()
     return clientes_lista

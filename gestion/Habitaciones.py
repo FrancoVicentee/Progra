@@ -1,5 +1,8 @@
-from utilidades import val_datos
+from utilidades import val_datos, archivos
 from gestion import Reservas
+
+RUTA_HABITACIONES = "datos/habitaciones.txt"
+COLUMNAS_HABITACIONES = [0, 1, 3]
 
 
 def alta_habitacion(habitaciones_lista):
@@ -8,7 +11,7 @@ def alta_habitacion(habitaciones_lista):
     val_datos.imprimir_titulo("Alta de habitaciones")
 
     numero = val_datos.pedir_entero_rango("Ingrese el número de habitación: ", 100, 999)
-    while existe_numero_habitacion(habitaciones_lista, numero):
+    while archivos.existe_valor(RUTA_HABITACIONES, 1, numero, -1, COLUMNAS_HABITACIONES):
         val_datos.imprimir_error("Error. Ya existe una habitación con ese número.")
         numero = val_datos.pedir_entero_rango("Ingrese el número de habitación: ", 100, 999)
 
@@ -22,12 +25,11 @@ def alta_habitacion(habitaciones_lista):
 
     estado = val_datos.pedir_estado_habitacion("Ingrese el estado de la habitación (Disponible/Ocupada/Mantenimiento): ")
 
-    id_nuevo = val_datos.generar_id(habitaciones_lista)
+    id_nuevo = archivos.obtener_proximo_id(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)
 
     habitacion_nueva = [id_nuevo, numero, tipo, capacidad, estado]
-    habitaciones_lista.append(habitacion_nueva)
-
-    val_datos.imprimir_exito(f"Habitación agregada correctamente con ID {id_nuevo}.")
+    if archivos.agregar_registro(RUTA_HABITACIONES, habitacion_nueva):
+        val_datos.imprimir_exito(f"Habitación agregada correctamente con ID {id_nuevo}.")
 
     return habitaciones_lista
 
@@ -50,43 +52,65 @@ def mostrar_habitacion(habitacion):
 
     print(f"{id_habitacion:<5}{numero_habitacion:<10}{tipo_habitacion:<12}{capacidad_habitacion:<12}{estado_habitacion:<15}")
 
+def imprimir_habitaciones_recursivo(arch):
+    """
+    Imprime las habitaciones del archivo y devuelve cuantas hay.
+    Caso base: readline() devuelve "" (fin del archivo) y devuelve 0.
+    Caso recursivo: lee una linea, la imprime y se llama de nuevo con el mismo archivo.
+    Reduccion del dominio: el cursor avanza una linea por llamada, asi queda una linea menos por leer.
+    """
+
+    linea = arch.readline()
+    if linea == "":
+        return 0
+    registro = archivos.leer_registro_de_linea(linea, COLUMNAS_HABITACIONES)
+    if len(registro) == 0:
+        return imprimir_habitaciones_recursivo(arch)
+    mostrar_habitacion(registro)
+    return 1 + imprimir_habitaciones_recursivo(arch)
+
 
 def listar_habitaciones(habitaciones_lista):
-    """Imprime en pantalla todas las habitaciones registradas con formato de tabla."""
+    """Imprime en pantalla todas las habitaciones del archivo con formato de tabla (lectura recursiva)."""
 
     val_datos.imprimir_titulo("Listado de habitaciones")
 
-    cantidad_habitaciones = len(habitaciones_lista)
-
-    if cantidad_habitaciones == 0:
-        print("No hay habitaciones cargadas.")
-    else:
+    try:
+        arch = open(RUTA_HABITACIONES, "rt", encoding="UTF-8")
         mostrar_encabezado_habitaciones()
-
-        indice = 0
-        while indice < cantidad_habitaciones:
-            mostrar_habitacion(habitaciones_lista[indice])
-            indice += 1
-
+        cantidad_habitaciones = imprimir_habitaciones_recursivo(arch)
         print("-" * 54)
-        print(f"Cantidad total de habitaciones: {cantidad_habitaciones}")
+        if cantidad_habitaciones == 0:
+            print("No hay habitaciones cargadas.")
+        else:
+            print(f"Cantidad total de habitaciones: {cantidad_habitaciones}")
+    except FileNotFoundError:
+        val_datos.imprimir_error(f"No se encontró el archivo {RUTA_HABITACIONES}.")
+    except OSError as error:
+        val_datos.imprimir_error(f"No se pudo leer el archivo {RUTA_HABITACIONES}: {error}")
+    finally:
+        try:
+            arch.close()
+        except NameError:
+            pass
 
     val_datos.pausar_menu()
     return habitaciones_lista
 
 
-def pedir_numero_existente(habitaciones_lista, mensaje):
-    """Pide un numero de habitacion hasta que corresponda a una habitacion cargada y devuelve su posicion en la matriz."""
+def pedir_numero_existente(mensaje):
+    """Pide un numero de habitacion hasta que exista en el archivo y devuelve el registro completo."""
 
     numero = val_datos.pedir_entero_rango(mensaje, 100, 999)
-    posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
+    habitacion = buscar_habitacion_por_numero(numero)
 
-    while posicion == -1:
+    while len(habitacion) == 0:
         val_datos.imprimir_error("Error. No existe una habitación con ese número.")
         numero = val_datos.pedir_entero_rango(mensaje, 100, 999)
-        posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
+        habitacion = buscar_habitacion_por_numero(numero)
 
-    return posicion
+    return habitacion
+
 
 
 def baja_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
@@ -97,12 +121,12 @@ def baja_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
 
     val_datos.imprimir_titulo("Baja de habitación")
 
-    if len(habitaciones_lista) == 0:
+    if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
         print("No hay habitaciones cargadas.")
         return habitaciones_lista
 
-    posicion = pedir_numero_existente(habitaciones_lista, "Ingrese el número de la habitación a dar de baja: ")
-    habitacion = habitaciones_lista[posicion]
+    habitacion = pedir_numero_existente("Ingrese el número de la habitación a dar de baja: ")
+
 
     reservas_de_la_habitacion = Reservas.obtener_reservas_por_habitacion(reservas_lista, habitacion[0])
 
@@ -117,8 +141,8 @@ def baja_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
         mostrar_habitacion(habitacion)
 
         if val_datos.pedir_confirmacion("¿Confirma la baja?"):
-            habitaciones_lista.pop(posicion)
-            val_datos.imprimir_exito("Habitación eliminada correctamente.")
+            if archivos.reemplazar_registro(RUTA_HABITACIONES, habitacion[0], None, COLUMNAS_HABITACIONES):
+                val_datos.imprimir_exito("Habitación eliminada correctamente.")
         else:
             print("Operación cancelada. La habitación no fue eliminada.")
 
@@ -133,12 +157,12 @@ def modificar_habitacion(habitaciones_lista):
 
     val_datos.imprimir_titulo("Modificación de habitación")
 
-    if len(habitaciones_lista) == 0:
+    if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
         print("No hay habitaciones cargadas.")
         return habitaciones_lista
 
-    posicion = pedir_numero_existente(habitaciones_lista, "Ingrese el número de la habitación a modificar: ")
-    habitacion = habitaciones_lista[posicion]
+    habitacion = pedir_numero_existente("Ingrese el número de la habitación a modificar: ")
+
 
     print("\nSe encontró la siguiente habitación:")
     mostrar_encabezado_habitaciones()
@@ -149,7 +173,7 @@ def modificar_habitacion(habitaciones_lista):
     entrada_numero = input(f"Número ({habitacion[1]}): ").strip()
     if entrada_numero != "":
         while (val_datos.es_entero_en_rango(entrada_numero, 100, 999) == False
-               or existe_numero_en_otra_posicion(habitaciones_lista, int(entrada_numero), posicion)):
+               or archivos.existe_valor(RUTA_HABITACIONES, 1, int(entrada_numero), habitacion[0], COLUMNAS_HABITACIONES)):
             val_datos.imprimir_error("Error. Ingrese un número entre 100 y 999 que no esté en uso.")
             entrada_numero = input(f"Número ({habitacion[1]}): ").strip()
         habitacion[1] = int(entrada_numero)
@@ -182,7 +206,8 @@ def modificar_habitacion(habitaciones_lista):
             entrada_estado = input(f"Estado ({habitacion[4]}): ")
         habitacion[4] = val_datos.normalizar_capitalizado(entrada_estado)
 
-    val_datos.imprimir_exito("Habitación modificada correctamente.")
+    if archivos.reemplazar_registro(RUTA_HABITACIONES, habitacion[0], habitacion, COLUMNAS_HABITACIONES):
+        val_datos.imprimir_exito("Habitación modificada correctamente.")
 
     print("\nLa habitación quedó así:")
     mostrar_encabezado_habitaciones()
@@ -199,17 +224,16 @@ def consultar_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
 
     val_datos.imprimir_titulo("Consultar habitación")
 
-    if len(habitaciones_lista) == 0:
+    if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
         print("No hay habitaciones cargadas.")
         return habitaciones_lista
 
     numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación: ", 100, 999)
-    posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
+    habitacion = buscar_habitacion_por_numero(numero)
 
-    if posicion == -1:
+    if len(habitacion) == 0:
         val_datos.imprimir_error("No existe una habitación con ese número.")
     else:
-        habitacion = habitaciones_lista[posicion]
         mostrar_encabezado_habitaciones()
         mostrar_habitacion(habitacion)
 
@@ -220,36 +244,36 @@ def consultar_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
             print("La habitación no tiene reservas registradas.")
         else:
             Reservas.mostrar_reservas_detalladas(reservas_de_la_habitacion, clientes_lista, habitaciones_lista)
-            noches = [val_datos.calcular_noches(reserva[3], reserva[4]) for reserva in reservas_de_la_habitacion]
-            print(f"\nTotal de reservas: {len(reservas_de_la_habitacion)} | Total de noches reservadas: {sum(noches)}")
+            print(f"\nTotal de reservas: {len(reservas_de_la_habitacion)} | Total de noches reservadas: {val_datos.total_noches(reservas_de_la_habitacion)}")
 
     val_datos.pausar_menu()
     return habitaciones_lista
 
 
-def existe_numero_habitacion(habitaciones_lista, numero):
-    """Devuelve True si ya existe una habitacion con el numero indicado."""
+def buscar_habitacion_por_numero(numero):
+    """Devuelve el registro de la habitacion con ese numero leyendo el archivo, o una lista vacia si no existe."""
 
-    return buscar_posicion_por_numero(habitaciones_lista, numero) != -1
+    encontrada = []
+    try:
+        arch = open(RUTA_HABITACIONES, "rt", encoding="UTF-8")
+        linea = arch.readline()
+        while linea != "" and len(encontrada) == 0:
+            registro = archivos.leer_registro_de_linea(linea, COLUMNAS_HABITACIONES)
+            if len(registro) > 0 and registro[1] == numero:
+                encontrada = registro
+            linea = arch.readline()
+    except FileNotFoundError:
+        val_datos.imprimir_error(f"No se encontró el archivo {RUTA_HABITACIONES}.")
+    except OSError as error:
+        val_datos.imprimir_error(f"No se pudo leer el archivo {RUTA_HABITACIONES}: {error}")
+    finally:
+        try:
+            arch.close()
+        except NameError:
+            pass
 
+    return encontrada
 
-def existe_numero_en_otra_posicion(habitaciones_lista, numero, posicion_actual):
-    """Devuelve True si el numero ya lo usa una habitacion distinta a la que esta en posicion_actual."""
-
-    posicion = buscar_posicion_por_numero(habitaciones_lista, numero)
-    return posicion != -1 and posicion != posicion_actual
-
-
-def buscar_posicion_por_numero(habitaciones_lista, numero):
-    """Devuelve la posicion en la matriz de la habitacion con el numero indicado, o -1 si no existe."""
-
-    posicion = -1
-    indice = 0
-    for habitacion in habitaciones_lista:
-        if habitacion[1] == numero:
-            posicion = indice
-        indice += 1
-    return posicion
 
 
 def obtener_rango_capacidad(tipo):

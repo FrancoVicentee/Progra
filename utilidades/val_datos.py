@@ -206,13 +206,32 @@ def existe_id(lista, id_valor):
     return len(coincidencias) > 0
 
 
-def buscar_por_id(lista, id_valor):
-    """Devuelve el registro de la matriz con el ID indicado, o una lista vacia si no existe."""
+def buscar_por_id(lista, id_valor, indice=0):
+    """
+    Devuelve el registro de la matriz con el ID indicado, o una lista vacia si no existe.
+    Caso base 1: indice >= len(lista), se recorrio todo y no esta: devuelve [].
+    Caso base 2: lista[indice][0] == id_valor: lo encontro y lo devuelve.
+    Caso recursivo: busca de nuevo desde indice + 1. El dominio se reduce en un elemento por llamada.
+    """
 
-    for registro in lista:
-        if registro[0] == id_valor:
-            return registro
-    return []
+    if indice >= len(lista):
+        return []
+    if lista[indice][0] == id_valor:
+        return lista[indice]
+    return buscar_por_id(lista, id_valor, indice + 1)
+
+
+def total_noches(reservas, indice=0):
+    """
+    Devuelve el total de noches de una matriz de reservas.
+    Caso base: indice >= len(reservas): no quedan reservas y devuelve 0.
+    Caso recursivo: noches de la reserva actual + total_noches desde indice + 1.
+    El dominio se reduce en una reserva por llamada.
+    """
+
+    if indice >= len(reservas):
+        return 0
+    return calcular_noches(reservas[indice][3], reservas[indice][4]) + total_noches(reservas, indice + 1)
 
 
 def pausar_menu():

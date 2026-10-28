@@ -1,4 +1,4 @@
-1;101;Simple;1;Disponible
+1;101;Simple;1;Ocupada
 2;102;Simple;1;Ocupada
 3;201;Doble;2;Disponible
 4;202;Doble;2;Mantenimiento
