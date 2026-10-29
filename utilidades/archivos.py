@@ -1,4 +1,5 @@
 import os
+import json
 from utilidades import val_datos
 
 
@@ -240,3 +241,34 @@ def cargar_matriz(ruta, columnas_enteras):
             pass
 
     return matriz
+
+
+def leer_json(ruta):
+    """Lee un archivo JSON y devuelve su contenido. Si no se puede leer, avisa y devuelve None."""
+
+    datos = None
+    try:
+        with open(ruta, "r", encoding="UTF-8") as archivo:
+            datos = json.load(archivo)
+    except FileNotFoundError:
+        val_datos.imprimir_error(f"No se encontró el archivo {ruta}.")
+    except json.JSONDecodeError as error:
+        val_datos.imprimir_error(f"El archivo {ruta} no tiene un formato JSON válido: {error}")
+    except OSError as error:
+        val_datos.imprimir_error(f"No se pudo leer el archivo {ruta}: {error}")
+
+    return datos
+
+
+def grabar_json(ruta, datos):
+    """Graba los datos en un archivo JSON. Devuelve True si se pudo grabar."""
+
+    grabado = False
+    try:
+        with open(ruta, "w", encoding="UTF-8") as archivo:
+            json.dump(datos, archivo, ensure_ascii=False, indent=4)
+        grabado = True
+    except OSError as error:
+        val_datos.imprimir_error(f"No se pudo grabar el archivo {ruta}: {error}")
+
+    return grabado

@@ -25,7 +25,8 @@ PATRON_ENTERO = r"^[0-9]+$"
 PATRON_TEXTO = r"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+( [A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*$"
 
 # Fecha dd/mm/aaaa. Cada grupo captura dia, mes y año respectivamente.
-PATRON_FECHA = r"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/([0-9]{4})$"
+# El año va de 1900 a 2099.
+PATRON_FECHA = r"^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/((19|20)[0-9]{2})$"
 
 
 
@@ -37,19 +38,22 @@ def es_entero(cadena):
 
 
 def pedir_entero_rango(mensaje, desde, hasta):
-    """Pide un numero entero por teclado hasta que se ingrese uno valido dentro del rango [desde, hasta]."""
+    """Pide un entero hasta que este entre desde y hasta. Lanza ValueError si desde es mayor que hasta."""
+
+    if desde > hasta:
+        raise ValueError(f"Rango inválido: desde ({desde}) no puede ser mayor que hasta ({hasta}).")
 
     valor_valido = False
     valor = None
     while valor_valido == False:
         entrada = input(mensaje)
-        if es_entero(entrada):
+        try:
             valor = int(entrada)
             if valor >= desde and valor <= hasta:
                 valor_valido = True
             else:
                 imprimir_error(f"Error. Ingrese un valor entre {desde} y {hasta}.")
-        else:
+        except ValueError:
             imprimir_error("Error. Debe ingresar un número entero.")
     return valor
 
