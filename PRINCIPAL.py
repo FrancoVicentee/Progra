@@ -1,18 +1,25 @@
 # MÓDULOS
 
 from gestion import Clientes, Administrador, Reservas, Habitaciones
-from utilidades import estadisticas, matriz, val_datos
+from utilidades import estadisticas, matriz, val_datos, archivos
 
 
-def login():
-    """Función para manejar el inicio de sesión del usuario.
-    Consulta un diccionario de usuarios y contraseñas para validar roles, y permite al usuario ingresar sus credenciales.
-    Devuelve una tupla (acceso_concedido, rol_usuario)."""
+RUTA_USUARIOS = "datos/usuarios.json"
 
-    usuarios = {
-        "admin": ("hotel123", "ADMIN"),
-        "recepcion": ("emp123", "EMPLEADO"),
-    }
+
+def cargar_usuarios():
+    """Lee los usuarios del JSON y pasa cada lista (contraseña, rol) a tupla."""
+
+    datos = archivos.leer_json(RUTA_USUARIOS)
+    usuarios = {}
+    if datos is not None:
+        for usuario, credenciales in datos.items():
+            usuarios[usuario] = tuple(credenciales)
+    return usuarios
+
+
+def login(usuarios):
+    """Pide usuario y contraseña con 3 intentos. Devuelve si entró y con qué rol."""
 
     intentos = 3
     acceso_concedido = False
@@ -37,7 +44,7 @@ def login():
     return acceso_concedido, rol_usuario
 
 
-def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
+def menu_principal_admin(clientes, habitaciones, reservas):
     """Función para mostrar el menú principal para administradores. Permite gestionar clientes, habitaciones, reservas,
     matrices, estadísticas del hotel y empleados. Devuelve True si el usuario eligió cerrar el programa."""
 
@@ -72,7 +79,7 @@ def menu_principal_admin(clientes, habitaciones, reservas, empleados_dict):
             case 5:
                 estadisticas.menu_estadisticas(clientes, habitaciones, reservas)
             case 6:
-                empleados_dict = Administrador.menu_admin(empleados_dict)
+                Administrador.menu_admin()
             case 7:
                 print("\nCerrando sesión... Volviendo a la pantalla de inicio.")
                 menu_activo = False
@@ -129,11 +136,6 @@ def menu_principal_empleados(clientes, habitaciones, reservas):
 if __name__ == "__main__":
 
     # Datos hardcodeados
-    empleados_dict = {
-        101: {"nombre": "Fran Cino", "sueldo": 550000},
-        102: {"nombre": "Benicio Beaudean", "sueldo": 670000}
-    }
-
     clientes = [
         [1, 'Juan', 'Pérez', 32145678],
         [2, 'Ana', 'López', 25412587],
@@ -161,19 +163,28 @@ if __name__ == "__main__":
         [6, 2, 3, '10/03/2026', '15/03/2026'],
     ]
 
-    sesion_activa = True
-    while sesion_activa == True:
-        acceso, rol = login()
+    try:
+        usuarios = cargar_usuarios()
 
-        if acceso == True:
-            salir = False
-            if rol == "ADMIN":
-                salir = menu_principal_admin(clientes, habitaciones, reservas, empleados_dict)
-            elif rol == "EMPLEADO":
-                salir = menu_principal_empleados(clientes, habitaciones, reservas)
-            if salir == True:
-                sesion_activa = False
+        if len(usuarios) == 0:
+            val_datos.imprimir_error("No hay usuarios cargados para iniciar sesión. Revise el archivo " + RUTA_USUARIOS + ".")
         else:
-            sesion_activa = False
+            sesion_activa = True
+            while sesion_activa == True:
+                acceso, rol = login(usuarios)
+
+                if acceso == True:
+                    salir = False
+                    if rol == "ADMIN":
+                        salir = menu_principal_admin(clientes, habitaciones, reservas)
+                    elif rol == "EMPLEADO":
+                        salir = menu_principal_empleados(clientes, habitaciones, reservas)
+                    if salir == True:
+                        sesion_activa = False
+                else:
+                    sesion_activa = False
+    except KeyboardInterrupt:
+        # Ctrl+C cierra el programa sin mostrar el error de Python.
+        val_datos.imprimir_error("\n\nPrograma interrumpido por el usuario.")
 
     print("\nSaliendo del programa, ¡Hasta luego!")
