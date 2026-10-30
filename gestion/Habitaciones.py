@@ -55,9 +55,6 @@ def mostrar_habitacion(habitacion):
 def imprimir_habitaciones_recursivo(arch):
     """
     Imprime las habitaciones del archivo y devuelve cuantas hay.
-    Caso base: readline() devuelve "" (fin del archivo) y devuelve 0.
-    Caso recursivo: lee una linea, la imprime y se llama de nuevo con el mismo archivo.
-    Reduccion del dominio: el cursor avanza una linea por llamada, asi queda una linea menos por leer.
     """
 
     linea = arch.readline()
