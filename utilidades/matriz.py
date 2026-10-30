@@ -205,7 +205,7 @@ def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
             case 9:
                 val_datos.imprimir_titulo("Buscar reservas por período")
                 mes = val_datos.pedir_entero_rango("Ingrese el mes (1-12): ", 1, 12)
-                anio = val_datos.pedir_entero_rango("Ingrese el año (2000-2100): ", 2000, 2100)
+                anio = val_datos.pedir_entero_rango("Ingrese el año (1900-2099): ", 1900, 2099)
                 buscar_reservas_por_periodo(reservas_lista, clientes_lista, habitaciones_lista, mes, anio)
             case 0:
                 print("Saliendo del menú de matrices...")

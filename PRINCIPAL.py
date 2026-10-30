@@ -183,8 +183,11 @@ if __name__ == "__main__":
                         sesion_activa = False
                 else:
                     sesion_activa = False
-    except KeyboardInterrupt:
-        # Ctrl+C cierra el programa sin mostrar el error de Python.
+    except (KeyboardInterrupt, EOFError):
+        # Ctrl+C (o Ctrl+Z en Windows) cierra el programa sin mostrar el error de Python.
         val_datos.imprimir_error("\n\nPrograma interrumpido por el usuario.")
+    except ValueError as error:
+        # Error interno del programa, por ejemplo un rango mal armado en pedir_entero_rango.
+        val_datos.imprimir_error(f"\nError interno del programa: {error}")
 
     print("\nSaliendo del programa, ¡Hasta luego!")

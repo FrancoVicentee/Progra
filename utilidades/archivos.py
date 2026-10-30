@@ -243,15 +243,18 @@ def cargar_matriz(ruta, columnas_enteras):
     return matriz
 
 
-def leer_json(ruta):
-    """Lee un archivo JSON y devuelve su contenido. Si no se puede leer, avisa y devuelve None."""
+def leer_json(ruta, valor_si_no_existe=None):
+    """Lee un archivo JSON. Si no existe devuelve valor_si_no_existe; si no se puede leer, avisa y devuelve None."""
 
     datos = None
     try:
         with open(ruta, "r", encoding="UTF-8") as archivo:
             datos = json.load(archivo)
     except FileNotFoundError:
-        val_datos.imprimir_error(f"No se encontró el archivo {ruta}.")
+        if valor_si_no_existe is None:
+            val_datos.imprimir_error(f"No se encontró el archivo {ruta}.")
+        else:
+            datos = valor_si_no_existe
     except json.JSONDecodeError as error:
         val_datos.imprimir_error(f"El archivo {ruta} no tiene un formato JSON válido: {error}")
     except OSError as error:

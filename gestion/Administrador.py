@@ -10,9 +10,9 @@ SUELDO_MAXIMO = 10000000
 
 
 def cargar_empleados():
-    """Lee los empleados del JSON y pasa los legajos de texto a int."""
+    """Lee los empleados del JSON y pasa los legajos de texto a int. Si el archivo no existe, no hay empleados."""
 
-    datos = archivos.leer_json(RUTA_EMPLEADOS)
+    datos = archivos.leer_json(RUTA_EMPLEADOS, {})
     if datos is None:
         return None
 
