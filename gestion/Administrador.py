@@ -17,8 +17,16 @@ def cargar_empleados():
         return None
 
     empleados_dict = {}
-    for legajo, empleado in datos.items():
-        empleados_dict[int(legajo)] = empleado
+    try:
+        for legajo, empleado in datos.items():
+            if val_datos.es_entero(legajo) == False:
+                raise ValueError(f"el legajo '{legajo}' no es un número.")
+            if "nombre" not in empleado or "sueldo" not in empleado:
+                raise ValueError(f"al legajo {legajo} le falta el nombre o el sueldo.")
+            empleados_dict[int(legajo)] = empleado
+    except (AttributeError, TypeError, ValueError) as error:
+        val_datos.imprimir_error(f"El archivo {RUTA_EMPLEADOS} tiene un formato incorrecto: {error}")
+        empleados_dict = None
     return empleados_dict
 
 

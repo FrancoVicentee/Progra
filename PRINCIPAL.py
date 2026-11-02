@@ -13,8 +13,14 @@ def cargar_usuarios():
     datos = archivos.leer_json(RUTA_USUARIOS)
     usuarios = {}
     if datos is not None:
-        for usuario, credenciales in datos.items():
-            usuarios[usuario] = tuple(credenciales)
+        try:
+            for usuario, credenciales in datos.items():
+                if len(credenciales) != 2:
+                    raise ValueError(f"el usuario '{usuario}' tiene que tener contraseña y rol.")
+                usuarios[usuario] = tuple(credenciales)
+        except (AttributeError, TypeError, ValueError) as error:
+            val_datos.imprimir_error(f"El archivo {RUTA_USUARIOS} tiene un formato incorrecto: {error}")
+            usuarios = {}
     return usuarios
 
 
