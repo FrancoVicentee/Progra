@@ -65,7 +65,6 @@ def menu_principal_admin():
 
     menu_activo = True
     salir_del_programa = False
-    clientes, habitaciones, reservas = [], [], []
 
     while menu_activo == True:
         titulo = " Menú Principal (ADMIN) "
@@ -85,9 +84,9 @@ def menu_principal_admin():
 
         match opcion:
             case 1:
-                Clientes.menu_clientes(reservas, habitaciones)
+                Clientes.menu_clientes()
             case 2:
-                Habitaciones.menu_habitaciones(habitaciones, reservas, clientes)
+                Habitaciones.menu_habitaciones()
             case 3:
                 Reservas.menu_reservas()
             case 4:
@@ -115,7 +114,6 @@ def menu_principal_empleados():
 
     menu_activo = True
     salir_del_programa = False
-    clientes, habitaciones, reservas = [], [], []
 
     while menu_activo == True:
         titulo = " Menú Principal (EMPLEADO) "
@@ -134,9 +132,9 @@ def menu_principal_empleados():
 
         match opcion:
             case 1:
-                Clientes.menu_clientes(reservas, habitaciones)
+                Clientes.menu_clientes()
             case 2:
-                Habitaciones.menu_habitaciones(habitaciones, reservas, clientes)
+                Habitaciones.menu_habitaciones()
             case 3:
                 Reservas.menu_reservas()
             case 4:

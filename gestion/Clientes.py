@@ -103,7 +103,7 @@ def listar_clientes():
     val_datos.pausar_menu()
 
 
-def baja_cliente(reservas_lista, habitaciones_lista):
+def baja_cliente():
     """
     Da de baja un cliente previa confirmacion. Para mantener la integridad referencial,
     no permite eliminar un cliente que tenga reservas asociadas (se muestran para que el usuario las elimine primero).
@@ -114,13 +114,13 @@ def baja_cliente(reservas_lista, habitaciones_lista):
     if len(cliente) == 0:
         return
 
-    reservas_del_cliente = Reservas.obtener_reservas_por_cliente(reservas_lista, cliente[0])
+    reservas_del_cliente = Reservas.obtener_reservas_por_cliente(cliente[0])
 
     if len(reservas_del_cliente) > 0:
         val_datos.imprimir_error(f"No se puede dar de baja a {cliente[1]} {cliente[2]}: "
                                  f"tiene {len(reservas_del_cliente)} reserva(s) asociada(s).")
         print("Elimine primero estas reservas desde el menú de reservas:\n")
-        Reservas.mostrar_reservas_detalladas(reservas_del_cliente, [cliente], habitaciones_lista)
+        Reservas.mostrar_reservas_detalladas(reservas_del_cliente)
     else:
         print("\nSe encontró el siguiente cliente:")
         mostrar_encabezado_clientes()
@@ -169,7 +169,7 @@ def modificar_cliente():
         val_datos.imprimir_exito("Cliente modificado correctamente.")
 
 
-def consultar_cliente(reservas_lista, habitaciones_lista):
+def consultar_cliente():
     """
     Consulta un cliente por ID y muestra sus datos junto con todas sus reservas asociadas
     (habitacion, fechas y noches), ademas de un pequeño resumen de su historial.
@@ -184,20 +184,20 @@ def consultar_cliente(reservas_lista, habitaciones_lista):
         print(f"Apellido: {cliente[2]}")
         print(f"DNI:      {cliente[3]}")
 
-        reservas_del_cliente = Reservas.obtener_reservas_por_cliente(reservas_lista, cliente[0])
+        reservas_del_cliente = Reservas.obtener_reservas_por_cliente(cliente[0])
 
         print(f"\nReservas de {cliente[1]} {cliente[2]}:")
         if len(reservas_del_cliente) == 0:
             print("El cliente no tiene reservas registradas.")
         else:
-            Reservas.mostrar_reservas_detalladas(reservas_del_cliente, [cliente], habitaciones_lista)
+            Reservas.mostrar_reservas_detalladas(reservas_del_cliente)
 
             print(f"\nTotal de reservas: {len(reservas_del_cliente)} | Total de noches: {val_datos.total_noches(reservas_del_cliente)}")
 
     val_datos.pausar_menu()
 
 
-def menu_clientes(reservas_lista, habitaciones_lista):
+def menu_clientes():
     """
     Menu principal para gestionar los clientes
     """
@@ -222,10 +222,10 @@ def menu_clientes(reservas_lista, habitaciones_lista):
             case 2:
                 listar_clientes()
             case 3:
-                baja_cliente(reservas_lista, habitaciones_lista)
+                baja_cliente()
             case 4:
                 modificar_cliente()
             case 5:
-                consultar_cliente(reservas_lista, habitaciones_lista)
+                consultar_cliente()
             case 0:
                 print("Saliendo del menú de clientes...")

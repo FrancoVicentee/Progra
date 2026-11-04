@@ -4,3 +4,4 @@ __pycache__/
 *.pyd
 datos/temp.txt
 .pytest_cache/
+.DS_Store

@@ -216,7 +216,10 @@ def clientes_con_mas_reservas(clientes_lista, reservas_lista):
         print(f"{puesto:<8}{nombre_completo[:24]:<25}{conteo[cliente[0]]:>10}{porcentaje:>13.1f}%")
         puesto += 1
 
-    clientes_con_reserva = {reserva[1] for reserva in reservas_lista}
+    # Se cruza con los IDs de clientes para no contar reservas de clientes que ya no existen.
+    ids_clientes = {cliente[0] for cliente in clientes_lista}
+    ids_con_reserva = {reserva[1] for reserva in reservas_lista}
+    clientes_con_reserva = ids_clientes & ids_con_reserva
     porcentaje_activos = calcular_porcentaje(len(clientes_con_reserva), len(clientes_lista))
     print(f"\nClientes con al menos una reserva: {len(clientes_con_reserva)} de {len(clientes_lista)} "
           f"({porcentaje_activos:.1f}%)")

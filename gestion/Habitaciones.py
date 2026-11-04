@@ -5,7 +5,7 @@ RUTA_HABITACIONES = "datos/habitaciones.txt"
 COLUMNAS_HABITACIONES = [0, 1, 3]
 
 
-def alta_habitacion(habitaciones_lista):
+def alta_habitacion():
     """Solicita los datos validados al usuario y registra una nueva habitación en el sistema."""
 
     val_datos.imprimir_titulo("Alta de habitaciones")
@@ -30,8 +30,6 @@ def alta_habitacion(habitaciones_lista):
     habitacion_nueva = [id_nuevo, numero, tipo, capacidad, estado]
     if archivos.agregar_registro(RUTA_HABITACIONES, habitacion_nueva):
         val_datos.imprimir_exito(f"Habitación agregada correctamente con ID {id_nuevo}.")
-
-    return habitaciones_lista
 
 
 def mostrar_encabezado_habitaciones():
@@ -67,7 +65,7 @@ def imprimir_habitaciones_recursivo(arch):
     return 1 + imprimir_habitaciones_recursivo(arch)
 
 
-def listar_habitaciones(habitaciones_lista):
+def listar_habitaciones():
     """Imprime en pantalla todas las habitaciones del archivo con formato de tabla (lectura recursiva)."""
 
     val_datos.imprimir_titulo("Listado de habitaciones")
@@ -92,7 +90,6 @@ def listar_habitaciones(habitaciones_lista):
             pass
 
     val_datos.pausar_menu()
-    return habitaciones_lista
 
 
 def pedir_numero_existente(mensaje):
@@ -110,7 +107,7 @@ def pedir_numero_existente(mensaje):
 
 
 
-def baja_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
+def baja_habitacion():
     """
     Da de baja una habitacion previa confirmacion. Para mantener la integridad referencial,
     no permite eliminar una habitacion que tenga reservas asociadas (se muestran para que el usuario las elimine primero).
@@ -120,18 +117,18 @@ def baja_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
 
     if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
         print("No hay habitaciones cargadas.")
-        return habitaciones_lista
+        return
 
     habitacion = pedir_numero_existente("Ingrese el número de la habitación a dar de baja: ")
 
 
-    reservas_de_la_habitacion = Reservas.obtener_reservas_por_habitacion(reservas_lista, habitacion[0])
+    reservas_de_la_habitacion = Reservas.obtener_reservas_por_habitacion(habitacion[0])
 
     if len(reservas_de_la_habitacion) > 0:
         val_datos.imprimir_error(f"No se puede dar de baja la habitación {habitacion[1]}: "
                                  f"tiene {len(reservas_de_la_habitacion)} reserva(s) asociada(s).")
         print("Elimine primero estas reservas desde el menú de reservas:\n")
-        Reservas.mostrar_reservas_detalladas(reservas_de_la_habitacion, clientes_lista, habitaciones_lista)
+        Reservas.mostrar_reservas_detalladas(reservas_de_la_habitacion)
     else:
         print("\nSe encontró la siguiente habitación:")
         mostrar_encabezado_habitaciones()
@@ -143,10 +140,8 @@ def baja_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
         else:
             print("Operación cancelada. La habitación no fue eliminada.")
 
-    return habitaciones_lista
 
-
-def modificar_habitacion(habitaciones_lista):
+def modificar_habitacion():
     """
     Permite modificar numero, tipo, capacidad y estado de una habitacion. Los campos que se dejan vacios
     no se modifican. Si cambia el tipo, se controla que la capacidad siga siendo valida para el nuevo tipo.
@@ -156,7 +151,7 @@ def modificar_habitacion(habitaciones_lista):
 
     if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
         print("No hay habitaciones cargadas.")
-        return habitaciones_lista
+        return
 
     habitacion = pedir_numero_existente("Ingrese el número de la habitación a modificar: ")
 
@@ -210,10 +205,8 @@ def modificar_habitacion(habitaciones_lista):
         mostrar_encabezado_habitaciones()
         mostrar_habitacion(habitacion)
 
-    return habitaciones_lista
 
-
-def consultar_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
+def consultar_habitacion():
     """
     Consulta una habitacion por numero y muestra sus datos junto con su historial de reservas
     (cliente, fechas y noches), ademas del total de noches reservadas.
@@ -223,7 +216,7 @@ def consultar_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
 
     if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
         print("No hay habitaciones cargadas.")
-        return habitaciones_lista
+        return
 
     numero = val_datos.pedir_entero_rango("Ingrese el número de la habitación: ", 100, 999)
     habitacion = buscar_habitacion_por_numero(numero)
@@ -234,17 +227,16 @@ def consultar_habitacion(habitaciones_lista, reservas_lista, clientes_lista):
         mostrar_encabezado_habitaciones()
         mostrar_habitacion(habitacion)
 
-        reservas_de_la_habitacion = Reservas.obtener_reservas_por_habitacion(reservas_lista, habitacion[0])
+        reservas_de_la_habitacion = Reservas.obtener_reservas_por_habitacion(habitacion[0])
 
         print(f"\nHistorial de reservas de la habitación {habitacion[1]}:")
         if len(reservas_de_la_habitacion) == 0:
             print("La habitación no tiene reservas registradas.")
         else:
-            Reservas.mostrar_reservas_detalladas(reservas_de_la_habitacion, clientes_lista, habitaciones_lista)
+            Reservas.mostrar_reservas_detalladas(reservas_de_la_habitacion)
             print(f"\nTotal de reservas: {len(reservas_de_la_habitacion)} | Total de noches reservadas: {val_datos.total_noches(reservas_de_la_habitacion)}")
 
     val_datos.pausar_menu()
-    return habitaciones_lista
 
 
 def buscar_habitacion_por_numero(numero):
@@ -279,7 +271,7 @@ def obtener_rango_capacidad(tipo):
     return val_datos.RANGOS_CAPACIDAD[tipo]
 
 
-def menu_habitaciones(habitaciones_lista, reservas_lista, clientes_lista):
+def menu_habitaciones():
     """
     Menu principal para gestionar las habitaciones.
     """
@@ -301,16 +293,14 @@ def menu_habitaciones(habitaciones_lista, reservas_lista, clientes_lista):
 
         match opcion:
             case 1:
-                habitaciones_lista = alta_habitacion(habitaciones_lista)
+                alta_habitacion()
             case 2:
-                habitaciones_lista = listar_habitaciones(habitaciones_lista)
+                listar_habitaciones()
             case 3:
-                habitaciones_lista = baja_habitacion(habitaciones_lista, reservas_lista, clientes_lista)
+                baja_habitacion()
             case 4:
-                habitaciones_lista = modificar_habitacion(habitaciones_lista)
+                modificar_habitacion()
             case 5:
-                habitaciones_lista = consultar_habitacion(habitaciones_lista, reservas_lista, clientes_lista)
+                consultar_habitacion()
             case 0:
                 print("Volviendo al menú anterior...")
-
-    return habitaciones_lista

@@ -25,11 +25,14 @@ def ordenar_por_numero(lista_de_habitaciones):
     return lista_de_habitaciones
 
 
-def ordenar_por_fecha_ingreso(lista_de_reservas, clientes_lista, habitaciones_lista):
+def ordenar_por_fecha_ingreso(lista_de_reservas):
     """Ordena la matriz de reservas por fecha de ingreso (convirtiendo la fecha a numero aaaammdd) y la muestra."""
 
-    lista_de_reservas.sort(key=lambda reserva: val_datos.convertir_fecha_a_numero(reserva[3]))
-    Reservas.mostrar_reservas_detalladas(lista_de_reservas, clientes_lista, habitaciones_lista)
+    if len(lista_de_reservas) == 0:
+        print("No hay reservas registradas.")
+    else:
+        lista_de_reservas.sort(key=lambda reserva: val_datos.convertir_fecha_a_numero(reserva[3]))
+        Reservas.mostrar_reservas_detalladas(lista_de_reservas)
     val_datos.pausar_menu()
     return lista_de_reservas
 
@@ -76,7 +79,7 @@ def buscar_clientes_por_inicio(clientes_lista, texto_buscado):
     return clientes_encontrados
 
 
-def buscar_reservas_por_periodo(reservas_lista, clientes_lista, habitaciones_lista, mes, anio):
+def buscar_reservas_por_periodo(reservas_lista, mes, anio):
     """
     Busca las reservas cuya fecha de ingreso cae en el mes y año indicados, usando una expresion regular
     con clase de caracteres y cuantificador para el dia: ^[0-9]{2}/mm/aaaa$.
@@ -89,7 +92,7 @@ def buscar_reservas_por_periodo(reservas_lista, clientes_lista, habitaciones_lis
     if len(reservas_encontradas) == 0:
         print("No se encontraron reservas en ese período.")
     else:
-        Reservas.mostrar_reservas_detalladas(reservas_encontradas, clientes_lista, habitaciones_lista)
+        Reservas.mostrar_reservas_detalladas(reservas_encontradas)
         print(f"\nCantidad de reservas encontradas: {len(reservas_encontradas)}")
 
     val_datos.pausar_menu()
@@ -185,7 +188,7 @@ def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
                 ordenar_por_numero(habitaciones_lista)
             case 3:
                 val_datos.imprimir_titulo("Reservas ordenadas por fecha de ingreso")
-                ordenar_por_fecha_ingreso(reservas_lista, clientes_lista, habitaciones_lista)
+                ordenar_por_fecha_ingreso(reservas_lista)
             case 4:
                 val_datos.imprimir_titulo("Habitaciones disponibles")
                 ver_habitaciones_disponibles(habitaciones_lista)
@@ -206,6 +209,6 @@ def menu_matrices(clientes_lista, habitaciones_lista, reservas_lista):
                 val_datos.imprimir_titulo("Buscar reservas por período")
                 mes = val_datos.pedir_entero_rango("Ingrese el mes (1-12): ", 1, 12)
                 anio = val_datos.pedir_entero_rango("Ingrese el año (1900-2099): ", 1900, 2099)
-                buscar_reservas_por_periodo(reservas_lista, clientes_lista, habitaciones_lista, mes, anio)
+                buscar_reservas_por_periodo(reservas_lista, mes, anio)
             case 0:
                 print("Saliendo del menú de matrices...")
