@@ -9,23 +9,21 @@ COLUMNAS_CLIENTES = [0, 3]
 COLUMNAS_HABITACIONES = [0, 1, 3]
 
 
-def obtener_reservas_por_cliente(reservas_lista, id_cliente):
-    """
-    Devuelve una lista con todas las reservas del archivo asociadas al cliente indicado, usando filter y lambda.
-    El parametro reservas_lista se mantiene para no romper las llamadas de Clientes.py, pero ya no se usa.
-    """
+def obtener_reservas_por_cliente(id_cliente):
+    """Devuelve una lista con todas las reservas del archivo asociadas al cliente indicado, usando filter y lambda."""
 
     reservas_archivo = archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)
     return list(filter(lambda reserva: reserva[1] == id_cliente, reservas_archivo))
 
 
-def obtener_reservas_por_habitacion(reservas_lista, id_habitacion):
-    """Devuelve una lista con todas las reservas asociadas a la habitacion indicada, usando filter y lambda."""
+def obtener_reservas_por_habitacion(id_habitacion):
+    """Devuelve una lista con todas las reservas del archivo asociadas a la habitacion indicada, usando filter y lambda."""
 
-    return list(filter(lambda reserva: reserva[2] == id_habitacion, reservas_lista))
+    reservas_archivo = archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)
+    return list(filter(lambda reserva: reserva[2] == id_habitacion, reservas_archivo))
 
 
-def mostrar_reservas_detalladas(reservas_a_mostrar, clientes_lista, habitaciones_lista):
+def mostrar_reservas_detalladas(reservas_a_mostrar):
     """
     Imprime en formato de tabla las reservas recibidas, reemplazando los IDs de cliente y habitacion
     por el nombre del cliente y el numero/tipo de la habitacion. Tambien muestra las noches de cada reserva.
@@ -55,7 +53,7 @@ def mostrar_reservas_detalladas(reservas_a_mostrar, clientes_lista, habitaciones
               f"{reserva[3]:<12}{reserva[4]:<12}{noches:<6}")
 
 
-def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
+def alta_reserva():
     """
     Registra una nueva reserva en el archivo de reservas. Valida que el cliente y la habitacion
     existan en sus archivos y que las fechas no se superpongan con otra reserva del mismo cliente
@@ -68,7 +66,7 @@ def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
     hay_habitaciones = len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) > 0
     if hay_clientes == False or hay_habitaciones == False:
         val_datos.imprimir_error("Debe existir al menos un cliente y una habitación registrados para crear una reserva.")
-        return reservas_lista
+        return
 
     id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
     while len(archivos.buscar_registro(RUTA_CLIENTES, id_cliente, COLUMNAS_CLIENTES)) == 0:
@@ -85,10 +83,9 @@ def alta_reserva(reservas_lista, clientes_lista, habitaciones_lista):
     nuevo_id = archivos.obtener_proximo_id(RUTA_RESERVAS, COLUMNAS_RESERVAS)
     if archivos.agregar_registro(RUTA_RESERVAS, [nuevo_id, id_cliente, id_hab, fecha_ingreso, fecha_egreso]):
         val_datos.imprimir_exito(f"Reserva agregada correctamente con ID {nuevo_id}.")
-    return reservas_lista
 
 
-def listar_reservas(reservas_lista, clientes_lista, habitaciones_lista):
+def listar_reservas():
     """Imprime todas las reservas registradas, leyendolas del archivo, con los datos del cliente y de la habitacion."""
 
     val_datos.imprimir_titulo("Listado de reservas")
@@ -96,12 +93,11 @@ def listar_reservas(reservas_lista, clientes_lista, habitaciones_lista):
     if len(reservas_archivo) == 0:
         print("No hay reservas registradas.")
     else:
-        mostrar_reservas_detalladas(reservas_archivo, clientes_lista, habitaciones_lista)
+        mostrar_reservas_detalladas(reservas_archivo)
         print(f"\nCantidad total de reservas: {len(reservas_archivo)}")
-    return reservas_lista
 
 
-def buscar_reserva_por_id(reservas_lista, id_reserva):
+def buscar_reserva_por_id(id_reserva):
     """
     Busca una reserva por su ID en el archivo de reservas. Devuelve una tupla (encontrado, reserva):
     encontrado es True/False y reserva es la fila encontrada (o una lista vacia).
@@ -178,18 +174,18 @@ def pedir_fechas_reserva(id_cliente, id_hab, id_reserva_excluida):
     return fecha_ingreso, fecha_egreso
 
 
-def baja_reserva(reservas_lista, clientes_lista, habitaciones_lista):
+def baja_reserva():
     """Muestra las reservas del archivo, pide el ID de la que se quiere eliminar y la elimina previa confirmacion."""
 
     val_datos.imprimir_titulo("Baja de reserva")
     reservas_archivo = archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)
     if len(reservas_archivo) == 0:
         print("No hay reservas registradas.")
-        return reservas_lista
+        return
 
-    mostrar_reservas_detalladas(reservas_archivo, clientes_lista, habitaciones_lista)
+    mostrar_reservas_detalladas(reservas_archivo)
     id_reserva = val_datos.pedir_entero_rango("\nIngrese el ID de la reserva: ", 1, 1000)
-    encontrado = buscar_reserva_por_id(reservas_lista, id_reserva)[0]
+    encontrado = buscar_reserva_por_id(id_reserva)[0]
 
     if encontrado:
         if val_datos.pedir_confirmacion(f"¿Confirma la baja de la reserva {id_reserva}?"):
@@ -199,10 +195,9 @@ def baja_reserva(reservas_lista, clientes_lista, habitaciones_lista):
             print("Operación cancelada.")
     else:
         val_datos.imprimir_error("No existe una reserva con ese ID.")
-    return reservas_lista
 
 
-def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
+def modificar_reserva():
     """
     Permite modificar cliente, habitacion y fechas de una reserva del archivo. Los campos que se dejan vacios
     no se modifican. Los cambios solo se guardan si las nuevas fechas son validas y no se superponen.
@@ -212,12 +207,12 @@ def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
     reservas_archivo = archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)
     if len(reservas_archivo) == 0:
         print("No hay reservas registradas.")
-        return reservas_lista
+        return
 
-    mostrar_reservas_detalladas(reservas_archivo, clientes_lista, habitaciones_lista)
+    mostrar_reservas_detalladas(reservas_archivo)   
 
     id_reserva = val_datos.pedir_entero_rango("\nIngrese el ID de la reserva: ", 1, 1000)
-    encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_reserva)
+    encontrado, reserva = buscar_reserva_por_id(id_reserva)
 
     if encontrado:
         print("Deje vacío el campo si no desea modificarlo.")
@@ -268,19 +263,18 @@ def modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista):
                 val_datos.imprimir_exito("Reserva modificada correctamente.")
     else:
         val_datos.imprimir_error("No existe una reserva con ese ID.")
-    return reservas_lista
 
 
-def info_reservas(reservas_lista, clientes_lista, habitaciones_lista):
+def info_reservas():
     """Consulta una reserva por ID y muestra su informacion completa junto con los datos del cliente y la habitacion."""
 
     val_datos.imprimir_titulo("Información completa de reserva")
     if len(archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)) == 0:
         print("No hay reservas registradas.")
-        return reservas_lista
+        return
 
     id_consulta = val_datos.pedir_entero_rango("Ingrese el ID de la reserva: ", 1, 1000)
-    encontrado, reserva = buscar_reserva_por_id(reservas_lista, id_consulta)
+    encontrado, reserva = buscar_reserva_por_id(id_consulta)
 
     if encontrado == False:
         val_datos.imprimir_error("No existe una reserva con ese ID.")
@@ -298,10 +292,9 @@ def info_reservas(reservas_lista, clientes_lista, habitaciones_lista):
         print(f"Noches:        {val_datos.calcular_noches(reserva[3], reserva[4])}")
 
     val_datos.pausar_menu()
-    return reservas_lista
 
 
-def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
+def menu_reservas():
     """
     Menu principal para gestionar las reservas.
     """
@@ -322,17 +315,15 @@ def menu_reservas(reservas_lista, clientes_lista, habitaciones_lista):
 
         match opcion:
             case 1:
-                reservas_lista = alta_reserva(reservas_lista, clientes_lista, habitaciones_lista)
+                alta_reserva()
             case 2:
-                reservas_lista = listar_reservas(reservas_lista, clientes_lista, habitaciones_lista)
+                listar_reservas()
                 val_datos.pausar_menu()
             case 3:
-                reservas_lista = baja_reserva(reservas_lista, clientes_lista, habitaciones_lista)
+                baja_reserva()
             case 4:
-                reservas_lista = modificar_reserva(reservas_lista, clientes_lista, habitaciones_lista)
+                modificar_reserva()
             case 5:
-                reservas_lista = info_reservas(reservas_lista, clientes_lista, habitaciones_lista)
+                info_reservas()
             case 0:
                 print("Saliendo del menú de reservas...")
-
-    return reservas_lista
