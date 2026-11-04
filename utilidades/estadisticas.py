@@ -46,17 +46,23 @@ def obtener_tipo_de_reserva(reserva, habitaciones_lista):
     return habitacion[2]
 
 
+def contar_reservas_de_cliente(reservas, id_cliente, indice=0):
+    """Cuenta recursivamente cuantas reservas de la matriz pertenecen al cliente indicado."""
+
+    if indice >= len(reservas):
+        return 0
+    if reservas[indice][1] == id_cliente:
+        return 1 + contar_reservas_de_cliente(reservas, id_cliente, indice + 1)
+    return contar_reservas_de_cliente(reservas, id_cliente, indice + 1)
+
+
 def contar_reservas_por_cliente(clientes_lista, reservas_lista):
     """Devuelve un diccionario {id_cliente: cantidad_de_reservas} con todos los clientes (incluso los que tienen 0)."""
 
     conteo = {}
     for cliente in clientes_lista:
-        conteo[cliente[0]] = 0
-    for reserva in reservas_lista:
-        if reserva[1] in conteo:
-            conteo[reserva[1]] += 1
+        conteo[cliente[0]] = contar_reservas_de_cliente(reservas_lista, cliente[0])
     return conteo
-
 
 def imprimir_tabla_categorias(titulo_columna, conteo, total):
     """Imprime una tabla con cantidad y porcentaje sobre el total de cada categoria del diccionario conteo."""
