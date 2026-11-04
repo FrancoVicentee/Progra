@@ -206,9 +206,9 @@ def modificar_habitacion(habitaciones_lista):
     if archivos.reemplazar_registro(RUTA_HABITACIONES, habitacion[0], habitacion, COLUMNAS_HABITACIONES):
         val_datos.imprimir_exito("Habitación modificada correctamente.")
 
-    print("\nLa habitación quedó así:")
-    mostrar_encabezado_habitaciones()
-    mostrar_habitacion(habitacion)
+        print("\nLa habitación quedó así:")
+        mostrar_encabezado_habitaciones()
+        mostrar_habitacion(habitacion)
 
     return habitaciones_lista
 

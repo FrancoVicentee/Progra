@@ -65,6 +65,7 @@ def menu_principal_admin():
 
     menu_activo = True
     salir_del_programa = False
+    clientes, habitaciones, reservas = [], [], []
 
     while menu_activo == True:
         titulo = " Menú Principal (ADMIN) "
@@ -82,20 +83,19 @@ def menu_principal_admin():
 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 7)
 
-        # Se leen los archivos en cada opcion para trabajar siempre con los datos actualizados.
-        if opcion >= 1 and opcion <= 5:
-            clientes, habitaciones, reservas = cargar_datos()
-
         match opcion:
             case 1:
                 Clientes.menu_clientes(reservas, habitaciones)
             case 2:
                 Habitaciones.menu_habitaciones(habitaciones, reservas, clientes)
             case 3:
-                Reservas.menu_reservas(reservas, clientes, habitaciones)
+                Reservas.menu_reservas()
             case 4:
+                # Se leen los archivos al entrar para trabajar con los datos actualizados.
+                clientes, habitaciones, reservas = cargar_datos()
                 matriz.menu_matrices(clientes, habitaciones, reservas)
             case 5:
+                clientes, habitaciones, reservas = cargar_datos()
                 estadisticas.menu_estadisticas(clientes, habitaciones, reservas)
             case 6:
                 Administrador.menu_admin()
@@ -115,6 +115,7 @@ def menu_principal_empleados():
 
     menu_activo = True
     salir_del_programa = False
+    clientes, habitaciones, reservas = [], [], []
 
     while menu_activo == True:
         titulo = " Menú Principal (EMPLEADO) "
@@ -131,20 +132,19 @@ def menu_principal_empleados():
 
         opcion = val_datos.pedir_entero_rango("Seleccione una opción: ", 0, 6)
 
-        # Se leen los archivos en cada opcion para trabajar siempre con los datos actualizados.
-        if opcion >= 1 and opcion <= 5:
-            clientes, habitaciones, reservas = cargar_datos()
-
         match opcion:
             case 1:
                 Clientes.menu_clientes(reservas, habitaciones)
             case 2:
                 Habitaciones.menu_habitaciones(habitaciones, reservas, clientes)
             case 3:
-                Reservas.menu_reservas(reservas, clientes, habitaciones)
+                Reservas.menu_reservas()
             case 4:
+                # Se leen los archivos al entrar para trabajar con los datos actualizados.
+                clientes, habitaciones, reservas = cargar_datos()
                 matriz.menu_matrices(clientes, habitaciones, reservas)
             case 5:
+                clientes, habitaciones, reservas = cargar_datos()
                 estadisticas.menu_estadisticas(clientes, habitaciones, reservas)
             case 6:
                 print("\nCerrando sesión... Volviendo a la pantalla de inicio.")
