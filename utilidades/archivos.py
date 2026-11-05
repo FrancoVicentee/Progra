@@ -9,6 +9,9 @@ SEPARADOR = ";"
 # Archivo auxiliar para las bajas y modificaciones. Existe solo mientras se reescribe el original.
 RUTA_TEMPORAL = "datos/temp.txt"
 
+# Ultimo ID asignado de cada entidad, para que un ID nunca se vuelva a usar.
+RUTA_ULTIMOS_IDS = "datos/ultimos_ids.json"
+
 
 
 def linea_a_registro(linea, columnas_enteras):
@@ -75,6 +78,31 @@ def buscar_registro(ruta, id_buscado, columnas_enteras):
     return registro_encontrado
 
 
+def hay_registros(ruta, columnas_enteras):
+    """Devuelve True si el archivo tiene al menos un registro valido, cortando apenas encuentra el primero."""
+
+    encontrado = False
+    try:
+        arch = open(ruta, "r", encoding="UTF-8")
+        linea = arch.readline()
+        while linea != "" and encontrado == False:
+            if len(leer_registro_de_linea(linea, columnas_enteras)) > 0:
+                encontrado = True
+            linea = arch.readline()
+    except FileNotFoundError:
+        # Si el archivo no existe, no hay registros.
+        pass
+    except OSError as error:
+        val_datos.imprimir_error(f"No se pudo leer el archivo {ruta}: {error}")
+    finally:
+        try:
+            arch.close()
+        except NameError:
+            pass
+
+    return encontrado
+
+
 def existe_valor(ruta, columna, valor, id_excluido, columnas_enteras):
     """
     Se fija si algun registro del archivo ya tiene ese valor en esa columna. 
@@ -131,6 +159,25 @@ def obtener_proximo_id(ruta, columnas_enteras):
             pass
 
     return mayor_id + 1
+
+
+def generar_nuevo_id(ruta, columnas_enteras, clave):
+    """Devuelve un ID que nunca se uso para esa entidad y lo guarda como el ultimo asignado."""
+
+    ultimos_ids = leer_json(RUTA_ULTIMOS_IDS, {})
+    if ultimos_ids is None:
+        ultimos_ids = {}
+
+    ultimo_guardado = 0
+    if clave in ultimos_ids:
+        ultimo_guardado = ultimos_ids[clave]
+    mayor_del_archivo = obtener_proximo_id(ruta, columnas_enteras) - 1
+
+    # Se toma el mayor de los dos por si el JSON no existe o quedo atrasado.
+    nuevo_id = max(ultimo_guardado, mayor_del_archivo) + 1
+    ultimos_ids[clave] = nuevo_id
+    grabar_json(RUTA_ULTIMOS_IDS, ultimos_ids)
+    return nuevo_id
 
 
 

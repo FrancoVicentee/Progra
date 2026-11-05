@@ -62,8 +62,8 @@ def alta_reserva():
 
     val_datos.imprimir_titulo("Alta de reserva")
 
-    hay_clientes = len(archivos.cargar_matriz(RUTA_CLIENTES, COLUMNAS_CLIENTES)) > 0
-    hay_habitaciones = len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) > 0
+    hay_clientes = archivos.hay_registros(RUTA_CLIENTES, COLUMNAS_CLIENTES)
+    hay_habitaciones = archivos.hay_registros(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)
     if hay_clientes == False or hay_habitaciones == False:
         val_datos.imprimir_error("Debe existir al menos un cliente y una habitación registrados para crear una reserva.")
         return
@@ -74,13 +74,18 @@ def alta_reserva():
         id_cliente = val_datos.pedir_entero_rango("Ingrese el ID del cliente: ", 1, 1000)
 
     id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
-    while len(archivos.buscar_registro(RUTA_HABITACIONES, id_hab, COLUMNAS_HABITACIONES)) == 0:
-        val_datos.imprimir_error("No existe una habitación con ese ID.")
+    habitacion = archivos.buscar_registro(RUTA_HABITACIONES, id_hab, COLUMNAS_HABITACIONES)
+    while len(habitacion) == 0 or habitacion[4] == "Mantenimiento":
+        if len(habitacion) == 0:
+            val_datos.imprimir_error("No existe una habitación con ese ID.")
+        else:
+            val_datos.imprimir_error(f"La habitación {habitacion[1]} está en mantenimiento y no se puede reservar.")
         id_hab = val_datos.pedir_entero_rango("Ingrese el ID de la habitación: ", 1, 1000)
+        habitacion = archivos.buscar_registro(RUTA_HABITACIONES, id_hab, COLUMNAS_HABITACIONES)
 
     fecha_ingreso, fecha_egreso = pedir_fechas_reserva(id_cliente, id_hab, -1)
 
-    nuevo_id = archivos.obtener_proximo_id(RUTA_RESERVAS, COLUMNAS_RESERVAS)
+    nuevo_id = archivos.generar_nuevo_id(RUTA_RESERVAS, COLUMNAS_RESERVAS, "reservas")
     if archivos.agregar_registro(RUTA_RESERVAS, [nuevo_id, id_cliente, id_hab, fecha_ingreso, fecha_egreso]):
         val_datos.imprimir_exito(f"Reserva agregada correctamente con ID {nuevo_id}.")
 
@@ -229,10 +234,18 @@ def modificar_reserva():
         id_hab_nuevo = reserva[2]
         entrada_hab = input(f"ID de habitación ({reserva[2]}): ").strip()
         if entrada_hab != "":
-            while (val_datos.es_entero(entrada_hab) == False
-                   or len(archivos.buscar_registro(RUTA_HABITACIONES, int(entrada_hab), COLUMNAS_HABITACIONES)) == 0):
-                val_datos.imprimir_error("Error. Debe ingresar un ID de habitación existente.")
+            habitacion = []
+            if val_datos.es_entero(entrada_hab):
+                habitacion = archivos.buscar_registro(RUTA_HABITACIONES, int(entrada_hab), COLUMNAS_HABITACIONES)
+            while len(habitacion) == 0 or habitacion[4] == "Mantenimiento":
+                if len(habitacion) == 0:
+                    val_datos.imprimir_error("Error. Debe ingresar un ID de habitación existente.")
+                else:
+                    val_datos.imprimir_error(f"La habitación {habitacion[1]} está en mantenimiento y no se puede reservar.")
                 entrada_hab = input(f"ID de habitación ({reserva[2]}): ").strip()
+                habitacion = []
+                if val_datos.es_entero(entrada_hab):
+                    habitacion = archivos.buscar_registro(RUTA_HABITACIONES, int(entrada_hab), COLUMNAS_HABITACIONES)
             id_hab_nuevo = int(entrada_hab)
 
         fecha_ingreso_nueva = reserva[3]
@@ -269,7 +282,7 @@ def info_reservas():
     """Consulta una reserva por ID y muestra su informacion completa junto con los datos del cliente y la habitacion."""
 
     val_datos.imprimir_titulo("Información completa de reserva")
-    if len(archivos.cargar_matriz(RUTA_RESERVAS, COLUMNAS_RESERVAS)) == 0:
+    if archivos.hay_registros(RUTA_RESERVAS, COLUMNAS_RESERVAS) == False:
         print("No hay reservas registradas.")
         return
 

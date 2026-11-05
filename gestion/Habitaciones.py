@@ -25,7 +25,7 @@ def alta_habitacion():
 
     estado = val_datos.pedir_estado_habitacion("Ingrese el estado de la habitación (Disponible/Ocupada/Mantenimiento): ")
 
-    id_nuevo = archivos.obtener_proximo_id(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)
+    id_nuevo = archivos.generar_nuevo_id(RUTA_HABITACIONES, COLUMNAS_HABITACIONES, "habitaciones")
 
     habitacion_nueva = [id_nuevo, numero, tipo, capacidad, estado]
     if archivos.agregar_registro(RUTA_HABITACIONES, habitacion_nueva):
@@ -115,7 +115,7 @@ def baja_habitacion():
 
     val_datos.imprimir_titulo("Baja de habitación")
 
-    if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
+    if archivos.hay_registros(RUTA_HABITACIONES, COLUMNAS_HABITACIONES) == False:
         print("No hay habitaciones cargadas.")
         return
 
@@ -149,7 +149,7 @@ def modificar_habitacion():
 
     val_datos.imprimir_titulo("Modificación de habitación")
 
-    if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
+    if archivos.hay_registros(RUTA_HABITACIONES, COLUMNAS_HABITACIONES) == False:
         print("No hay habitaciones cargadas.")
         return
 
@@ -214,7 +214,7 @@ def consultar_habitacion():
 
     val_datos.imprimir_titulo("Consultar habitación")
 
-    if len(archivos.cargar_matriz(RUTA_HABITACIONES, COLUMNAS_HABITACIONES)) == 0:
+    if archivos.hay_registros(RUTA_HABITACIONES, COLUMNAS_HABITACIONES) == False:
         print("No hay habitaciones cargadas.")
         return
 

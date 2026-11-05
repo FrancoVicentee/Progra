@@ -46,14 +46,15 @@ def obtener_tipo_de_reserva(reserva, habitaciones_lista):
     return habitacion[2]
 
 
-def contar_reservas_de_cliente(reservas, id_cliente, indice=0):
+def contar_reservas_de_cliente(reservas, id_cliente):
     """Cuenta recursivamente cuantas reservas de la matriz pertenecen al cliente indicado."""
 
-    if indice >= len(reservas):
+    if len(reservas) == 0:
         return 0
-    if reservas[indice][1] == id_cliente:
-        return 1 + contar_reservas_de_cliente(reservas, id_cliente, indice + 1)
-    return contar_reservas_de_cliente(reservas, id_cliente, indice + 1)
+    # reservas[1:] es la lista sin la primera reserva: se achica en cada llamada.
+    if reservas[0][1] == id_cliente:
+        return 1 + contar_reservas_de_cliente(reservas[1:], id_cliente)
+    return contar_reservas_de_cliente(reservas[1:], id_cliente)
 
 
 def contar_reservas_por_cliente(clientes_lista, reservas_lista):

@@ -175,22 +175,6 @@ def calcular_noches(fecha_ingreso, fecha_egreso):
 
 
 
-def generar_id(lista):
-    """Calcula el proximo ID libre de una matriz usando map y max. Devuelve 1 si la matriz esta vacia."""
-
-    if len(lista) == 0:
-        return 1
-    ids = list(map(lambda registro: registro[0], lista))
-    return max(ids) + 1
-
-
-def existe_id(lista, id_valor):
-    """Devuelve True si existe un registro en la matriz cuyo ID (posicion 0) coincida con id_valor."""
-
-    coincidencias = list(filter(lambda registro: registro[0] == id_valor, lista))
-    return len(coincidencias) > 0
-
-
 def buscar_por_id(lista, id_valor, indice=0):
     """
     Devuelve el registro de la matriz con el ID indicado, o una lista vacia si no existe.

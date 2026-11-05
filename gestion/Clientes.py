@@ -67,7 +67,7 @@ def ingresar_cliente():
         val_datos.imprimir_error("Error. Ya existe un cliente con ese DNI.")
         dni = val_datos.pedir_dni("DNI: ")
 
-    nuevo_id = archivos.obtener_proximo_id(RUTA_CLIENTES, COLUMNAS_ENTERAS_CLIENTES)
+    nuevo_id = archivos.generar_nuevo_id(RUTA_CLIENTES, COLUMNAS_ENTERAS_CLIENTES, "clientes")
     nuevo_cliente = [nuevo_id, nombre, apellido, dni]
 
     if archivos.agregar_registro(RUTA_CLIENTES, nuevo_cliente):
